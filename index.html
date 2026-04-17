@@ -1,33 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="yo">
 <head>
-  <title>AbíóyèỌpẹ́yẹmí.com</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abíóyè Ọpẹ́yẹmí | Linguistics Hub</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            padding: 20px; 
+            max-width: 900px; 
+            margin: auto; 
+            background-color: #f9f9f9; 
+            color: #333;
+        }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h3 { font-weight: normal; color: #555; }
+        
+        /* The Question Section */
+        .action-box { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 40px 0;
+            text-align: center;
+        }
+        .action-box h2 { margin-top: 0; color: #2980b9; }
+
+        /* The Buttons */
+        .btn-container { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .btn { 
+            padding: 15px 25px; 
+            font-size: 1.1rem; 
+            text-decoration: none; 
+            color: white; 
+            border-radius: 8px; 
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .btn-transcribe { background-color: #3498db; }
+        .btn-transcribe:hover { background-color: #2980b9; transform: translateY(-2px); }
+        
+        .btn-dictionary { background-color: #27ae60; }
+        .btn-dictionary:hover { background-color: #219150; transform: translateY(-2px); }
+
+        /* Your existing converter styling */
+        .converter-section { margin-top: 50px; padding: 20px; border-top: 1px solid #ddd; }
+        input { padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 4px; }
+        button.small-btn { padding: 10px 20px; cursor: pointer; background: #333; color: white; border: none; border-radius: 4px; }
+    </style>
 </head>
 <body>
 
-<h1>AbíóyèỌpẹ́yẹmí</h1>
-<h3>welcome to this page where You see different liguistic research, Yorùbá dictionary,
-</h3>
-<h3>Liguistics tutorials in Phonetics, Phonology, morphology, syntax, semantics,</h3>
-<h3>socioliguistics, discourse analysis, computational linguistics, forensic linguistics and many more</h3>
-<h3>on this site, you'll also see and be able to play the various linguistics games in </h3>
-<h3>x-bar syntax, Ipa symbols game, Distinctive feature game, and several other games that can teach you linguisticis.</h3>
-<h3>you'll also be able to transcribe any yoruba word to Ipa</h3>
-<h1>Yoruba → IPA Converter</h1>
+    <h1>Abíóyè Ọpẹ́yẹmí</h1>
+    <h3>Welcome to this page where you see different linguistic research and Yorùbá tools.</h3>
+    <h3>Explore tutorials in Phonetics, Phonology, Morphology, Syntax, Semantics, Sociolinguistics, Discourse Analysis, Computational Linguistics, and Forensic Linguistics.</h3>
+    <h3>Play various linguistics games in X-bar syntax, IPA symbols, Distinctive features, and more.</h3>
 
-<input id="word" placeholder="Enter word">
-<button onclick="convert()">Convert</button>
+    <div class="action-box">
+        <h2>What do you want to do?</h2>
+        <div class="btn-container">
+            <a href="https://ugproject.abioyeopeyemi.com" class="btn btn-transcribe">Transcribe Yorùbá Orthography</a>
+            <a href="https://atumooroede.abioyeopeyemi.com" class="btn btn-dictionary">Check Yorùbá Dictionary</a>
+        </div>
+    </div>
+    <div class="converter-section">
+        <h1>Yorùbá → IPA Quick Converter</h1>
+        <p>You can also quickly transcribe any word below:</p>
+        <input id="word" placeholder="Enter Yorùbá word">
+        <button class="small-btn" onclick="convert()">Convert</button>
+        <p id="result" style="font-weight: bold; color: #e67e22; font-size: 1.2rem;"></p>
+    </div>
 
-<p id="result"></p>
-
-<script>
-function convert() {
-  const word = document.getElementById("word").value;
-
-  document.getElementById("result").innerText =
-    "IPA version of: " + word;
-}
-</script>
+    <script>
+        function convert() {
+            const word = document.getElementById("word").value;
+            // This is your placeholder logic
+            document.getElementById("result").innerText = "IPA version of: " + word;
+        }
+    </script>
 
 </body>
 </html>
