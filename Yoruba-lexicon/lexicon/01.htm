@@ -13,9 +13,10 @@
 </head>
 
 <body style='tab-interval:2pt'>
+<audio id="global-audio-player" style="display:none;"></audio>
 <p align="center" class="lpTitlePara">A  -  a</p>
 
-<p class="lpLexEntryPara_KeepWithNext"><a href="../audio/ata ewa.wav" target="_blank" onclick="javascript:BatmoAudioPop('Lexique Pro Audio',this.href,'1'); return false"><img border="0" src="../images/sound-icon.png" /></a> <span id="e0" class="lpLexEntryName">Ata ẹ̀wà</span><span class="lpSpAfterEntryName">&nbsp;&nbsp;&nbsp;</span><span class="lpPartOfSpeech">n. </span><span class="lpPhonetic">[ātā ɛ̀wà]&nbsp;</span><span class="lpGlossEnglish">A yoruba stew specifically made for eating beans.</span> <span class="lpExample">Mo fẹ́ran ata ẹ̀w&agrave;</span> <span class="lpGlossEnglish">I love beans stew</span><span class="lpPunctuation">.</span></p>
+<p class="lpLexEntryPara_KeepWithNext"><a href="#" onclick="playAudio('../audio/ata ewa.wav'); return false;"><img border="0" src="../images/sound-icon.png" /></a> <span id="e0" class="lpLexEntryName">Ata ẹ̀wà</span><span class="lpSpAfterEntryName">&nbsp;&nbsp;&nbsp;</span><span class="lpPartOfSpeech">n. </span><span class="lpPhonetic">[ātā ɛ̀wà]&nbsp;</span><span class="lpGlossEnglish">A yoruba stew specifically made for eating beans.</span> <span class="lpExample">Mo fẹ́ran ata ẹ̀w&agrave;</span> <span class="lpGlossEnglish">I love beans stew</span><span class="lpPunctuation">.</span></p>
 <p class="lpPicturePara"><table cellspacing="0" cellpadding="4" style='margin-left:40pt'> <tr margin-top="0cm">  <td><img border="0" src="../pictures/ata%20ewa.jpeg" width="300" height="300"/></td></tr></table></p>
 
 <p class="lpLexEntryPara_KeepWithNext"><a href="../audio/Ayamaṣe.wav" target="_blank" onclick="javascript:BatmoAudioPop('Lexique Pro Audio',this.href,'1'); return false"><img border="0" src="../images/sound-icon.png" /></a> <span id="e1" class="lpLexEntryName">Ayamaṣe</span><span class="lpSpAfterEntryName">&nbsp;&nbsp;&nbsp;</span><span class="lpPartOfSpeech">n. </span><span class="lpPhonetic">[ājāmāʃē]&nbsp;</span><span class="lpGlossEnglish">A yoruba stew made for ofada rice.</span> <span class="lpExample">Mi &ograve; fẹ́ran Ayamaṣe</span> <span class="lpGlossEnglish">I don't like ofada stew</span><span class="lpPunctuation">.</span></p>
@@ -45,6 +46,17 @@
 <p class="lpLexEntryPara_KeepWithNext"><a href="../audio/amala dudu.wav" target="_blank" onclick="javascript:BatmoAudioPop('Lexique Pro Audio',this.href,'1'); return false"><img border="0" src="../images/sound-icon.png" /></a> <span id="e48" class="lpLexEntryName">&Agrave;m&agrave;l&agrave; d&uacute;d&uacute;</span><span class="lpSpAfterEntryName">&nbsp;&nbsp;&nbsp;</span><span class="lpPartOfSpeech">n. </span><span class="lpPhonetic">[àmàlà dúdú]&nbsp;</span><span class="lpGlossEnglish">A staple food made with yam peel.</span> <span class="lpExample">Mo jẹ &agrave;m&agrave;l&agrave; d&uacute;d&uacute; ni &agrave;n&aacute;</span> <span class="lpGlossEnglish">i ate black &Agrave;m&agrave;l&agrave; yesterday</span><span class="lpPunctuation">.</span></p>
 <p class="lpPicturePara"><table cellspacing="0" cellpadding="4" style='margin-left:40pt'> <tr margin-top="0cm">  <td><img border="0" src="../pictures/Amala.jpg" width="300" height="224"/></td></tr></table></p>
 
+<script type="text/javascript">
+function playAudio(audioUrl) {
+    var player = document.getElementById('global-audio-player');
+    if (player) {
+        player.src = audioUrl;
+        player.play().catch(function(error) {
+            console.error("Audio playback failed:", error);
+        });
+    }
+}
+</script>
 </body>
 
 </html>
