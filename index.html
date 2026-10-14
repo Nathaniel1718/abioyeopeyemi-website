@@ -289,10 +289,10 @@
       <p>Type a Yorùbá word or phrase with tone marks and under-dots (e.g. <em>ọ̀rẹ́</em>, <em>ṣé</em>, <em>gbogbo</em>).</p>
       <div class="conv-row">
         <input id="word" placeholder="Enter Yorùbá word" autocomplete="off" aria-label="Yorùbá word">
-        <button class="btn btn-gold" onclick="convert()">Convert</button>
+        <button class="btn btn-gold" id="convert-btn" onclick="convert()">Convert</button>
       </div>
       <div class="ipa-out" id="result" aria-live="polite"></div>
-      <div class="conv-note">Unmarked vowels are read as mid tone (shown with a macron). Results are a guide; check them against your data.</div>
+      <div class="conv-note" id="conv-status">Powered by the Àdàkọ G2P engine. Results are a guide; check them against your data.</div>
     </div>
 
     <div class="grid">
@@ -623,14 +623,50 @@
     return ipa.normalize("NFC");
   }
 
-  function convert() {
-    const text = document.getElementById("word").value.trim();
+  // ---------- Àdàkọ G2P engine (backend), with the converter above as fallback ----------
+  const G2P_URL = "https://ayida-back-end.onrender.com/transcribe";
+  const G2P_NOTE = "Powered by the Àdàkọ G2P engine. Results are a guide; check them against your data.";
+  const wordInput = document.getElementById("word");
+  const convertBtn = document.getElementById("convert-btn");
+  const statusEl = document.getElementById("conv-status");
+
+  // The backend sleeps when idle; wake it as soon as someone starts typing
+  wordInput.addEventListener("focus", () => {
+    fetch(G2P_URL.replace("/transcribe", "/"), { mode: "no-cors" }).catch(() => {});
+  }, { once: true });
+
+  async function convert() {
+    const text = wordInput.value.trim();
     const out = document.getElementById("result");
     if (!text) { out.textContent = ""; return; }
-    out.textContent = "/" + text.split(/\s+/).map(wordToIPA).join(" ") + "/";
+    convertBtn.disabled = true;
+    convertBtn.textContent = "Converting…";
+    const slow = setTimeout(() => {
+      statusEl.textContent = "Waking up the G2P engine. The first conversion can take up to a minute…";
+    }, 4000);
+    try {
+      const res = await fetch(G2P_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+        signal: AbortSignal.timeout(70000),
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      out.textContent = "/" + data.transcription + "/";
+      statusEl.textContent = G2P_NOTE;
+    } catch (err) {
+      console.error("G2P engine unavailable:", err);
+      out.textContent = "/" + text.split(/\s+/).map(wordToIPA).join(" ") + "/";
+      statusEl.textContent = "The G2P engine is unavailable right now, so this result comes from the quick in-browser converter (unmarked vowels read as mid tone).";
+    } finally {
+      clearTimeout(slow);
+      convertBtn.disabled = false;
+      convertBtn.textContent = "Convert";
+    }
   }
 
-  document.getElementById("word").addEventListener("keydown", e => {
+  wordInput.addEventListener("keydown", e => {
     if (e.key === "Enter") convert();
   });
 </script>
