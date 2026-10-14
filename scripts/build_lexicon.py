@@ -9,6 +9,7 @@ Re-run after every new Lexique Pro export:
     python3 scripts/build_lexicon.py
 """
 import html
+import json
 import re
 import unicodedata
 from pathlib import Path
@@ -17,6 +18,8 @@ from urllib.parse import quote, unquote
 ROOT = Path(__file__).resolve().parent.parent
 LEX_DIR = ROOT / "Yoruba-lexicon"
 OUT = LEX_DIR / "index.html"
+SITE = "https://abioyeopeyemi.com"
+PAGE_URL = SITE + "/Yoruba-lexicon/index.html"
 
 # Yorùbá alphabet, used for the A–Z filter (gb before g so it matches first)
 ALPHABET = ["a", "b", "d", "e", "ẹ", "f", "g", "gb", "h", "i", "j", "k", "l",
@@ -94,6 +97,11 @@ def esc(s):
     return html.escape(s, quote=True)
 
 
+def slug(word):
+    base = "".join(c for c in unicodedata.normalize("NFD", word.lower()) if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]+", "-", base).strip("-")
+
+
 def card(e):
     search = " ".join([e["word"], e["gloss"], e["example"], e["translation"]])
     pic = (f'<img src="{e["picture"]}" alt="{esc(e["word"])}" loading="lazy">'
@@ -108,7 +116,7 @@ def card(e):
         example = (f'<blockquote class="example"><span lang="yo">{esc(e["example"])}</span>'
                    + (f'<span class="tr">{esc(e["translation"])}</span>' if e["translation"] else "")
                    + "</blockquote>")
-    return f"""      <article class="entry" data-letter="{esc(e["letter"])}" data-search="{esc(search)}">
+    return f"""      <article class="entry" id="{e["id"]}" data-letter="{esc(e["letter"])}" data-search="{esc(search)}">
         <div class="pic">{pic}</div>
         <div class="body">
           <div class="head">
@@ -130,10 +138,33 @@ def build():
         if letter in used:
             chips.append(f'<button class="chip" type="button" data-letter="{letter}">{letter.upper() if len(letter) == 1 else letter.capitalize()}</button>')
     recordings = sum(1 for e in entries if e["audio"])
+    seen = {}
+    for e in entries:
+        base = slug(e["word"])
+        seen[base] = seen.get(base, 0) + 1
+        e["id"] = base if seen[base] == 1 else f"{base}-{seen[base]}"
+    jsonld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "DefinedTermSet", "@id": PAGE_URL + "#set", "name": "Dictionary of Yorùbá Foods",
+         "url": PAGE_URL, "inLanguage": ["yo", "en"],
+         "description": "Yorùbá food names with tone-marked spellings, IPA, example sentences, pictures and audio.",
+         "creator": {"@type": "Person", "name": "Abíóyè Ọpẹ́yẹmí", "url": SITE + "/"},
+         "hasDefinedTerm": [
+             {"@type": "DefinedTerm", "@id": PAGE_URL + "#" + e["id"], "name": e["word"],
+              "description": e["gloss"], "inDefinedTermSet": PAGE_URL + "#set",
+              **({"image": SITE + "/Yoruba-lexicon/" + e["picture"]} if e["picture"] else {})}
+             for e in entries]},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"},
+            {"@type": "ListItem", "position": 2, "name": "Dictionaries", "item": SITE + "/#dictionaries"},
+            {"@type": "ListItem", "position": 3, "name": "Dictionary of Yorùbá Foods", "item": PAGE_URL}]}]}
     page = TEMPLATE.format(
         count=len(entries),
         recordings=recordings,
         letters=len(used),
+        page_url=PAGE_URL,
+        site=SITE,
+        og_image=SITE + "/Yoruba-lexicon/" + next(e["picture"] for e in entries if e["picture"]),
+        jsonld=json.dumps(jsonld, ensure_ascii=False, indent=1).replace("</", "<\\/"),
         chips="\n        ".join(chips),
         cards="\n".join(card(e) for e in entries),
     )
@@ -147,7 +178,20 @@ TEMPLATE = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dictionary of Yorùbá Foods | Abíóyè Ọpẹ́yẹmí</title>
-<meta name="description" content="An illustrated dictionary of Yorùbá foods and dishes, with tone-marked headwords, IPA transcriptions, example sentences and native-speaker audio.">
+<meta name="description" content="An illustrated dictionary of {count} Yorùbá foods and dishes (àmàlà, ẹ̀bà, ewédú, gbẹ̀gìrì and more) with tone marks, IPA, example sentences, pictures and native-speaker audio.">
+<link rel="canonical" href="{page_url}">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Abíóyè Ọpẹ́yẹmí · Linguistics Hub">
+<meta property="og:title" content="Dictionary of Yorùbá Foods">
+<meta property="og:description" content="{count} Yorùbá foods and dishes with pictures, IPA and native-speaker audio.">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{og_image}">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{jsonld}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
