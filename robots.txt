@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abioyeopeyemi.com/sitemap.xml
+Sitemap: https://www.abioyeopeyemi.com/sitemap.xml

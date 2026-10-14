@@ -18,7 +18,7 @@ from urllib.parse import quote, unquote
 ROOT = Path(__file__).resolve().parent.parent
 LEX_DIR = ROOT / "Yoruba-lexicon"
 OUT = LEX_DIR / "index.html"
-SITE = "https://abioyeopeyemi.com"
+SITE = "https://www.abioyeopeyemi.com"
 PAGE_URL = SITE + "/Yoruba-lexicon/index.html"
 
 # Yorùbá alphabet, used for the A–Z filter (gb before g so it matches first)
