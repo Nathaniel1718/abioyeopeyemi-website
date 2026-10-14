@@ -180,6 +180,28 @@
   footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
   .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
   footer a { color: #fff; }
+  /* Quote dialog */
+  dialog.quote-dialog {
+    border: none; border-radius: var(--radius); padding: 0; width: min(440px, calc(100% - 32px));
+    box-shadow: 0 20px 60px rgba(31,42,90,0.3); color: var(--ink);
+  }
+  dialog.quote-dialog::backdrop { background: rgba(31,42,90,0.55); }
+  .quote-head { background: var(--indigo); color: #fff; padding: 20px 24px; position: relative; }
+  .quote-head h3 { font-size: 1.3rem; padding-right: 32px; }
+  .quote-head p { margin: 4px 0 0; color: #c9cfe8; font-size: 0.92rem; }
+  .quote-close {
+    position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 8px;
+    border: none; background: rgba(255,255,255,0.12); color: #fff; font-size: 1.2rem; cursor: pointer;
+  }
+  .quote-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .quote-body .btn { justify-content: center; }
+  .btn-wa { background: #25d366; color: #0b3d1f; }
+  .btn-wa:hover { background: #3ee07a; }
+  .btn-line { border-color: var(--line); color: var(--indigo); background: var(--paper); }
+  .btn-line:hover { border-color: var(--gold); }
+  .quote-copy { display: flex; gap: 8px; align-items: center; margin-top: 6px; font-size: 0.9rem; color: var(--muted); flex-wrap: wrap; }
+  .quote-copy code { background: var(--cream); border: 1px solid var(--line); padding: 4px 8px; border-radius: 6px; color: var(--ink); }
+  .quote-copy button { border: none; background: none; color: var(--indigo); font-weight: 600; cursor: pointer; font-family: inherit; padding: 4px; }
 </style>
 </head>
 <body>
@@ -233,43 +255,43 @@
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></div>
         <h3>Audio &amp; Phonetic Transcription</h3>
         <p>Accurate orthographic and IPA transcription of interviews, fieldwork recordings and speech data.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Transcription%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Transcription%20request" data-quote="Transcription">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></svg></div>
         <h3>ELAN Language Annotation</h3>
         <p>Multi-tier time-aligned annotation for language documentation, corpora and AI training data.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=ELAN%20annotation%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=ELAN%20annotation%20request" data-quote="ELAN annotation">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l2-6 3 12 3-15 3 15 3-9 2 3h2"/></svg></div>
         <h3>Praat Acoustic Analysis</h3>
         <p>Pitch, tone, formant and duration analysis with clear charts and reports for your research.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Acoustic%20analysis%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Acoustic%20analysis%20request" data-quote="Acoustic analysis">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg></div>
         <h3>Discourse &amp; Conversation Analysis</h3>
         <p>Conversation transcription with standard notation, plus analysis for theses and research papers.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Discourse%20analysis%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Discourse%20analysis%20request" data-quote="Discourse analysis">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div>
         <h3>Translation &amp; Subtitling</h3>
         <p>Yorùbá ⇄ English translation of documents, plus subtitles for films, sermons and videos.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Translation%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Translation%20request" data-quote="Translation">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
         <h3>Proofreading, Editing &amp; Book Review</h3>
         <p>Careful editing of theses, articles and books, with honest, constructive reviews.</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Editing%20request">Request a quote →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Editing%20request" data-quote="Editing">Request a quote →</a>
       </div>
       <div class="card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
         <h3>Language Research</h3>
         <p>Fieldwork, data collection and documentation of languages and dialects (e.g. Ahan).</p>
-        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Research%20collaboration">Collaborate with us →</a>
+        <a class="card-link" href="mailto:abioye1718@gmail.com?subject=Research%20collaboration" data-quote="Research collaboration">Collaborate with us →</a>
       </div>
     </div>
   </div>
@@ -552,12 +574,27 @@
       <h2>Have a language project?</h2>
       <p>Tell us what you need: transcription, annotation, analysis, translation or editing. We'll reply with a quote.</p>
       <div class="btn-row">
-        <a href="mailto:abioye1718@gmail.com?subject=Project%20enquiry" class="btn btn-gold">Email Us</a>
+        <a href="mailto:abioye1718@gmail.com?subject=Project%20enquiry" data-quote="Project" class="btn btn-gold">Email Us</a>
         <a href="https://wa.me/2349025534185" class="btn btn-ghost">Chat on WhatsApp</a>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ============ QUOTE DIALOG ============ -->
+<dialog class="quote-dialog" id="quote">
+  <div class="quote-head">
+    <h3 id="quote-title">Request a quote</h3>
+    <p>Choose how you'd like to reach us. We'll reply with a quote.</p>
+    <button class="quote-close" type="button" aria-label="Close" onclick="this.closest('dialog').close()">×</button>
+  </div>
+  <div class="quote-body">
+    <a class="btn btn-wa" id="quote-wa" target="_blank" rel="noopener">Send on WhatsApp</a>
+    <a class="btn btn-indigo" id="quote-gmail" target="_blank" rel="noopener">Send with Gmail</a>
+    <a class="btn btn-line" id="quote-mail">Use my email app</a>
+    <div class="quote-copy">Or email us directly: <code>abioye1718@gmail.com</code> <button type="button" id="quote-copy">Copy</button></div>
+  </div>
+</dialog>
 
 <footer>
   <div class="wrap foot">
@@ -669,6 +706,38 @@
   wordInput.addEventListener("keydown", e => {
     if (e.key === "Enter") convert();
   });
+  // ---------- Request-a-quote dialog ----------
+  // mailto: links do nothing on devices without an email app, so offer WhatsApp and Gmail too
+  const QUOTE_EMAIL = "abioye1718@gmail.com";
+  const QUOTE_WHATSAPP = "2349025534185";
+  const quoteDialog = document.getElementById("quote");
+
+  function openQuote(service) {
+    const subject = service === "Project" ? "Project enquiry" : service === "Research collaboration" ? service : service + " request";
+    const message = (service === "Research collaboration" ? "Hello, I'd like to discuss a research collaboration."
+      : "Hello, I'd like a quote for " + (service === "Project" ? "a language project" : service.toLowerCase()) + ".") +
+      "\n\nProject details:\n";
+    document.getElementById("quote-title").textContent = service === "Project" ? "Get in touch" : subject;
+    document.getElementById("quote-wa").href = "https://wa.me/" + QUOTE_WHATSAPP + "?text=" + encodeURIComponent(message);
+    document.getElementById("quote-gmail").href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + QUOTE_EMAIL +
+      "&su=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(message);
+    document.getElementById("quote-mail").href = "mailto:" + QUOTE_EMAIL + "?subject=" + encodeURIComponent(subject) +
+      "&body=" + encodeURIComponent(message);
+    document.getElementById("quote-copy").textContent = "Copy";
+    quoteDialog.showModal();
+  }
+
+  document.querySelectorAll("[data-quote]").forEach(link => link.addEventListener("click", e => {
+    e.preventDefault();
+    openQuote(link.dataset.quote);
+  }));
+  quoteDialog.addEventListener("click", e => { if (e.target === quoteDialog) quoteDialog.close(); });
+  document.getElementById("quote-copy").addEventListener("click", async e => {
+    try { await navigator.clipboard.writeText(QUOTE_EMAIL); e.target.textContent = "Copied!"; }
+    catch { e.target.textContent = "Select and copy the address"; }
+  });
+  // Other pages link to /#quote to open this dialog
+  if (location.hash === "#quote") openQuote("Project");
 </script>
 </body>
 </html>
