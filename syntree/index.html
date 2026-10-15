@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syntax Tree Drawer | Abíóyè Ọpẹ́yẹmí</title>
+<meta name="description" content="Free syntax tree drawing tool. Type labelled bracketing or build trees by hand: click nodes to add branches, drag branches to move them, and export as PNG or SVG.">
+<link rel="canonical" href="https://www.abioyeopeyemi.com/syntree/">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Abíóyè Ọpẹ́yẹmí · Linguistics Hub">
+<meta property="og:title" content="Syntax Tree Drawer">
+<meta property="og:description" content="Draw syntax trees from labelled bracketing, then drag branches and add nodes by hand. Export as PNG or SVG.">
+<meta property="og:url" content="https://www.abioyeopeyemi.com/syntree/">
+<meta property="og:image" content="https://www.abioyeopeyemi.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Syntax Tree Drawer","url":"https://www.abioyeopeyemi.com/syntree/","applicationCategory":"EducationalApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0"},"creator":{"@type":"Person","name":"Abíóyè Ọpẹ́yẹmí","url":"https://www.abioyeopeyemi.com/"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1f2a5a;
+    --indigo-2: #2d3b7a;
+    --gold: #d99a26;
+    --gold-dark: #b97f14;
+    --clay: #b5502d;
+    --cream: #faf6ee;
+    --paper: #ffffff;
+    --ink: #22252f;
+    --muted: #5f6475;
+    --line: #e7e1d4;
+    --green: #2f8a57;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.2; margin: 0; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  /* Nav */
+  header.nav { position: sticky; top: 0; z-index: 50; background: rgba(31, 42, 90, 0.97); color: #fff; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+  .brand { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; white-space: nowrap; }
+  .brand span { color: var(--gold); }
+  .nav-links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { text-decoration: none; font-size: 0.92rem; padding: 6px 10px; border-radius: 8px; color: #dfe3f5; white-space: nowrap; }
+  .nav-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-links a.cta { background: var(--gold); color: var(--indigo); font-weight: 600; }
+  .nav-links a.cta:hover { background: #e8ab3a; }
+
+  /* Hero */
+  .hero {
+    background:
+      radial-gradient(circle at 85% 20%, rgba(217,154,38,0.25), transparent 40%),
+      linear-gradient(135deg, var(--indigo) 0%, var(--indigo-2) 100%);
+    color: #fff; padding: 40px 0 44px; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+    background-size: 22px 22px; pointer-events: none;
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+  .crumb { font-size: 0.88rem; color: #c9cfe8; margin-bottom: 12px; }
+  .crumb a { color: #fff; text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .eyebrow { color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); margin: 8px 0 12px; }
+  .hero p.lead { font-size: 1.05rem; color: #d6dbf0; max-width: 680px; margin: 0; }
+
+  /* Editor */
+  section { padding: 28px 0 56px; }
+  .panel {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 16px;
+  }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .panel-head label { font-weight: 600; color: var(--indigo); }
+  .hint { font-size: 0.85rem; color: var(--muted); }
+  textarea {
+    width: 100%; min-height: 84px; resize: vertical; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--cream); color: var(--ink);
+    font: 0.98rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+  textarea:focus, input[type="text"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .error { color: var(--clay); font-size: 0.88rem; min-height: 1.3em; margin-top: 4px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .tb {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--indigo);
+    font: 600 0.88rem 'Noto Sans', sans-serif; cursor: pointer; white-space: nowrap;
+  }
+  .tb:hover:not(:disabled) { border-color: var(--gold); }
+  .tb:disabled { opacity: 0.4; cursor: default; }
+  .tb.primary { background: var(--gold); border-color: var(--gold); }
+  .tb.primary:hover:not(:disabled) { background: #e8ab3a; }
+  .tb.on { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+  .tb svg { width: 16px; height: 16px; }
+  .sep { width: 1px; height: 24px; background: var(--line); margin: 0 4px; }
+
+  .stage-wrap { position: relative; }
+  #stage {
+    display: block; width: 100%; height: min(64vh, 620px); min-height: 380px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab;
+    background-image: radial-gradient(#ece5d6 1px, transparent 1px); background-size: 20px 20px;
+  }
+  #stage.panning { cursor: grabbing; }
+  .inline-edit {
+    position: absolute; transform: translate(-50%, -50%); min-width: 70px; padding: 4px 8px;
+    border: 2px solid var(--gold); border-radius: 8px; background: #fff; text-align: center;
+    font: 600 16px 'Noto Sans', sans-serif; color: var(--indigo); box-shadow: 0 4px 14px rgba(31,42,90,0.18);
+  }
+  .inline-edit:focus { outline: none; }
+  .zoom { position: absolute; right: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .zoom .tb { width: 36px; height: 36px; padding: 0; justify-content: center; font-size: 1.1rem; }
+
+  .node { cursor: pointer; }
+  .node text { font-family: 'Noto Sans', Arial, sans-serif; font-size: 16px; }
+  .node .hit { fill: transparent; }
+  .node.selected .hit { fill: rgba(217,154,38,0.18); stroke: var(--gold); stroke-width: 1.5; }
+  .node.target .hit { fill: rgba(47,138,87,0.18); stroke: var(--green); stroke-width: 2; }
+  .node.dragging { opacity: 0.75; }
+  .edge { stroke: var(--ink); stroke-width: 1.3; fill: none; }
+  .plus { cursor: pointer; }
+  .plus circle { fill: var(--gold); }
+  .plus:hover circle { fill: #e8ab3a; }
+  .plus path { stroke: var(--indigo); stroke-width: 2.2; stroke-linecap: round; }
+
+  .node-panel { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; }
+  .node-panel input[type="text"] {
+    flex: 1 1 160px; min-width: 0; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line);
+    font: 1rem 'Noto Sans', sans-serif; background: var(--cream);
+  }
+  .node-panel .who { font-weight: 600; color: var(--indigo); font-size: 0.92rem; }
+  .node-panel.empty { color: var(--muted); font-size: 0.92rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 0.9rem; color: var(--muted); }
+  .opts label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+  .help { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); margin-top: 8px; }
+  .help .panel { margin: 0; }
+  .help h3 { font-size: 1.1rem; color: var(--indigo); margin-bottom: 6px; }
+  .help ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.93rem; }
+  .help code { background: var(--cream); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 0.88em; color: var(--ink); }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0;
+    background: var(--indigo); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 0.92rem;
+    transition: opacity .2s, transform .2s; pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+
+  footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  footer a { color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">Abíóyè <span>Ọpẹ́yẹmí</span></a>
+    <nav class="nav-links">
+      <a href="/#services">Services</a>
+      <a href="/#tools">Tools</a>
+      <a href="/#dictionaries">Dictionaries</a>
+      <a href="/#learn">Learn</a>
+      <a href="/#research">Research</a>
+      <a href="/#work">Our Work</a>
+      <a href="/#about">About</a>
+      <a href="/#quote" class="cta">Hire Us</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Syntax Tree Drawer</div>
+    <div class="eyebrow">Free tool · Syntax</div>
+    <h1>Syntax Tree Drawer</h1>
+    <p class="lead">Type labelled bracketing, or build the tree by hand: click a node to add a branch, drag branches to move them, and drop a branch on another node to re-attach it. Export as PNG or SVG.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <label for="brackets">Labelled bracketing</label>
+        <span class="hint">e.g. <code>[S [NP Adé] [VP [V jẹ] [NP iṣu]]]</code> · <code>^</code> before a label draws a triangle · <code>NP_1</code> gives a subscript</span>
+      </div>
+      <textarea id="brackets" spellcheck="false" aria-describedby="parse-error"></textarea>
+      <div class="error" id="parse-error" aria-live="polite"></div>
+    </div>
+
+    <div class="panel">
+      <div class="toolbar" role="toolbar" aria-label="Tree tools">
+        <button class="tb" id="undo" title="Undo (Ctrl+Z)">↶ Undo</button>
+        <button class="tb" id="redo" title="Redo (Ctrl+Y)">↷ Redo</button>
+        <span class="sep"></span>
+        <button class="tb" id="arrange" title="Tidy the layout">Auto-arrange</button>
+        <button class="tb" id="newtree" title="Start a new tree">New tree</button>
+        <span class="sep"></span>
+        <button class="tb" id="drag-mode" title="Choose what dragging moves">Drag: whole branch</button>
+        <span class="sep"></span>
+        <button class="tb primary" id="png">Download PNG</button>
+        <button class="tb" id="svg">Download SVG</button>
+        <button class="tb" id="copy">Copy brackets</button>
+      </div>
+      <div class="opts">
+        <label><input type="checkbox" id="opt-color" checked> Colour labels</label>
+        <label><input type="checkbox" id="opt-italic"> Italic words</label>
+        <label><input type="checkbox" id="opt-sort" checked> Order branches by position</label>
+      </div>
+    </div>
+
+    <div class="stage-wrap">
+      <svg id="stage" aria-label="Syntax tree canvas" role="application">
+        <g id="world"></g>
+      </svg>
+      <input class="inline-edit" id="inline-edit" type="text" aria-label="Node label" hidden>
+      <div class="zoom">
+        <button class="tb" id="zin" aria-label="Zoom in">+</button>
+        <button class="tb" id="zout" aria-label="Zoom out">−</button>
+        <button class="tb" id="zfit" aria-label="Fit tree to view" title="Fit">⤢</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <div class="node-panel empty" id="node-panel">Click a node to select it.</div>
+    </div>
+
+    <div class="help">
+      <div class="panel">
+        <h3>Build by hand</h3>
+        <ul>
+          <li>Click a node, then the gold <strong>+</strong> under it to add a branch.</li>
+          <li>Double-click a node to rename it.</li>
+          <li><strong>Insert parent</strong> wraps a node in a new one (handy for adjunction).</li>
+          <li><kbd>Delete</kbd> removes the selected branch.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Move branches</h3>
+        <ul>
+          <li>Drag a node to move it with everything under it.</li>
+          <li>Switch to <strong>Drag: single node</strong> to move one node only.</li>
+          <li>Drop a branch onto another node (it turns green) to attach it there.</li>
+          <li>Drag the empty canvas to pan; use + / − or the mouse wheel to zoom.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Brackets</h3>
+        <ul>
+          <li><code>[NP the dog]</code>: words after a label form one leaf.</li>
+          <li><code>[^NP the big dog]</code>: draws a triangle.</li>
+          <li><code>[NP_i ...]</code> or <code>t_i</code>: subscripts.</li>
+          <li>The brackets update as you edit the tree, and the tree redraws as you type.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>© <span id="year"></span> Abíóyè Ọpẹ́yẹmí · Linguistics Hub</div>
+    <div><a href="mailto:abioye1718@gmail.com">abioye1718@gmail.com</a></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  "use strict";
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const FONT_SIZE = 16, LEVEL = 64, GAP = 22, HALF_H = 13;
+  const COLORS = { phrase: "#1f2a5a", leaf: "#b5502d", plain: "#22252f" };
+  const STORE_KEY = "syntree-v1";
+  const EXAMPLE = "[S [NP Adé] [VP [V jẹ] [NP iṣu]]]";
+
+  const stage = document.getElementById("stage");
+  const world = document.getElementById("world");
+  const textarea = document.getElementById("brackets");
+  const errorEl = document.getElementById("parse-error");
+  const nodePanel = document.getElementById("node-panel");
+  const opt = {
+    color: document.getElementById("opt-color"),
+    italic: document.getElementById("opt-italic"),
+    sort: document.getElementById("opt-sort"),
+  };
+
+  let root = null;          // tree: {id, label, triangle, children[], x, y}
+  let nextId = 1;
+  let selected = null;
+  let dragWhole = true;
+  let view = { x: 0, y: 0, k: 1 };
+  const undoStack = [], redoStack = [];
+
+  // ---------- Text measurement ----------
+  const measureCtx = document.createElement("canvas").getContext("2d");
+  function splitLabel(label) {
+    const m = /^(.*?)_(\S+)$/.exec(label);
+    return m && m[1] ? { main: m[1], sub: m[2] } : { main: label, sub: "" };
+  }
+  function textWidth(label, italic) {
+    const { main, sub } = splitLabel(label || " ");
+    measureCtx.font = `${italic ? "italic " : ""}${FONT_SIZE}px "Noto Sans", Arial, sans-serif`;
+    let w = measureCtx.measureText(main || " ").width;
+    if (sub) {
+      measureCtx.font = `${Math.round(FONT_SIZE * 0.7)}px "Noto Sans", Arial, sans-serif`;
+      w += measureCtx.measureText(sub).width + 1;
+    }
+    return Math.max(w, 8);
+  }
+  const isLeaf = n => n.children.length === 0 && n !== root;
+  const nodeWidth = n => textWidth(n.label, isLeaf(n) && opt.italic.checked);
+
+  // ---------- Tree helpers ----------
+  function makeNode(label, children = [], triangle = false) {
+    return { id: nextId++, label, triangle, children, x: 0, y: 0 };
+  }
+  function walk(n, fn, parent = null) {
+    fn(n, parent);
+    n.children.forEach(c => walk(c, fn, n));
+  }
+  function findParent(target) {
+    let found = null;
+    walk(root, (n, p) => { if (n === target) found = p; });
+    return found;
+  }
+  function contains(ancestor, n) {
+    let hit = false;
+    walk(ancestor, x => { if (x === n) hit = true; });
+    return hit;
+  }
+  function moveSubtree(n, dx, dy) { walk(n, x => { x.x += dx; x.y += dy; }); }
+  function sortChildren(n) {
+    if (!opt.sort.checked) return;
+    walk(n, x => x.children.sort((a, b) => a.x - b.x));
+  }
+
+  // ---------- Bracket parsing ----------
+  function parse(src) {
+    let i = 0;
+    const s = src.trim();
+    if (!s) throw new Error("Type a tree, e.g. [S [NP ...] [VP ...]]");
+    const ws = () => { while (i < s.length && /\s/.test(s[i])) i++; };
+    function node() {
+      if (s[i] !== "[") throw new Error(`Expected "[" at character ${i + 1}`);
+      i++; ws();
+      let label = "";
+      while (i < s.length && !/[\s\[\]]/.test(s[i])) label += s[i++];
+      let triangle = false;
+      if (label.startsWith("^")) { triangle = true; label = label.slice(1); }
+      const kids = [];
+      for (;;) {
+        ws();
+        if (i >= s.length) throw new Error("Missing \"]\": a bracket is not closed");
+        if (s[i] === "]") { i++; break; }
+        if (s[i] === "[") { kids.push(node()); continue; }
+        let text = "";
+        while (i < s.length && s[i] !== "[" && s[i] !== "]") text += s[i++];
+        text = text.trim();
+        if (text) kids.push(makeNode(text));
+      }
+      return makeNode(label, kids, triangle);
+    }
+    ws();
+    const tree = node();
+    ws();
+    if (i < s.length) throw new Error(`Unexpected text after the tree at character ${i + 1}: "${s.slice(i, i + 12)}"`);
+    return tree;
+  }
+  function serialize(n, onlyChild = false) {
+    const kids = n.children;
+    if (kids.length === 0 && n !== root && onlyChild) return n.label;
+    const label = (n.triangle ? "^" : "") + n.label;
+    if (kids.length === 0) return `[${label}]`;
+    const inner = kids.map(c => serialize(c, kids.length === 1)).join(" ");
+    return `[${label} ${inner}]`;
+  }
+
+  // ---------- Layout ----------
+  function autoLayout() {
+    if (!root) return;
+    const widths = new Map();
+    (function measure(n) {
+      const w = nodeWidth(n);
+      n.children.forEach(measure);
+      const kids = n.children.reduce((s, c) => s + widths.get(c), 0) + GAP * Math.max(0, n.children.length - 1);
+      widths.set(n, Math.max(w, kids));
+    })(root);
+    (function place(n, left, depth) {
+      n.y = depth * LEVEL;
+      if (!n.children.length) { n.x = left + widths.get(n) / 2; return; }
+      const kids = n.children.reduce((s, c) => s + widths.get(c), 0) + GAP * (n.children.length - 1);
+      let x = left + (widths.get(n) - kids) / 2;
+      n.children.forEach(c => { place(c, x, depth + 1); x += widths.get(c) + GAP; });
+      n.x = (n.children[0].x + n.children[n.children.length - 1].x) / 2;
+    })(root, 0, 0);
+  }
+
+  // ---------- Rendering ----------
+  function labelEl(n, x, y, forExport) {
+    const leaf = isLeaf(n);
+    const t = document.createElementNS(SVGNS, "text");
+    t.setAttribute("x", x);
+    t.setAttribute("y", y);
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("dominant-baseline", "central");
+    t.setAttribute("fill", opt.color.checked ? (leaf ? COLORS.leaf : COLORS.phrase) : COLORS.plain);
+    if (!leaf) t.setAttribute("font-weight", "600");
+    if (leaf && opt.italic.checked) t.setAttribute("font-style", "italic");
+    if (forExport) {
+      t.setAttribute("font-family", "'Noto Sans', Arial, sans-serif");
+      t.setAttribute("font-size", FONT_SIZE);
+    }
+    const { main, sub } = splitLabel(n.label);
+    t.appendChild(document.createTextNode(main));
+    if (sub) {
+      const s = document.createElementNS(SVGNS, "tspan");
+      s.setAttribute("font-size", Math.round(FONT_SIZE * 0.7));
+      s.setAttribute("dy", "5");
+      s.textContent = sub;
+      t.appendChild(s);
+    }
+    return t;
+  }
+
+  function drawTree(container, forExport) {
+    const edges = document.createElementNS(SVGNS, "g");
+    const nodes = document.createElementNS(SVGNS, "g");
+    container.append(edges, nodes);
+    walk(root, (n, p) => {
+      if (p) {
+        const onlyLeaf = p.triangle && p.children.length === 1 && isLeaf(n);
+        let el;
+        if (onlyLeaf) {
+          const hw = nodeWidth(n) / 2 + 4;
+          el = document.createElementNS(SVGNS, "path");
+          el.setAttribute("d", `M${p.x},${p.y + HALF_H} L${n.x - hw},${n.y - HALF_H} L${n.x + hw},${n.y - HALF_H} Z`);
+        } else {
+          el = document.createElementNS(SVGNS, "line");
+          el.setAttribute("x1", p.x); el.setAttribute("y1", p.y + HALF_H);
+          el.setAttribute("x2", n.x); el.setAttribute("y2", n.y - HALF_H);
+        }
+        el.setAttribute("class", "edge");
+        if (forExport) { el.setAttribute("stroke", COLORS.plain); el.setAttribute("stroke-width", "1.3"); el.setAttribute("fill", "none"); }
+        edges.appendChild(el);
+      }
+      const g = document.createElementNS(SVGNS, "g");
+      if (!forExport) {
+        g.setAttribute("class", "node" + (n === selected ? " selected" : ""));
+        g.dataset.id = n.id;
+        const w = nodeWidth(n);
+        const hit = document.createElementNS(SVGNS, "rect");
+        hit.setAttribute("class", "hit");
+        hit.setAttribute("x", n.x - w / 2 - 6); hit.setAttribute("y", n.y - HALF_H);
+        hit.setAttribute("width", w + 12); hit.setAttribute("height", HALF_H * 2);
+        hit.setAttribute("rx", 6);
+        g.appendChild(hit);
+      }
+      g.appendChild(labelEl(n, n.x, n.y, forExport));
+      nodes.appendChild(g);
+    });
+  }
+
+  function render() {
+    world.replaceChildren();
+    world.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`);
+    if (!root) return;
+    drawTree(world, false);
+    if (selected) {
+      const plus = document.createElementNS(SVGNS, "g");
+      plus.setAttribute("class", "plus");
+      plus.dataset.plus = "1";
+      const cy = selected.y + HALF_H + 14;
+      plus.innerHTML = `<title>Add a branch</title><circle cx="${selected.x}" cy="${cy}" r="10"/>` +
+        `<path d="M${selected.x - 5},${cy} h10 M${selected.x},${cy - 5} v10"/>`;
+      world.appendChild(plus);
+    }
+  }
+
+  // ---------- State, undo, sync ----------
+  function snapshot() { return JSON.stringify({ root, nextId }); }
+  function restore(json) {
+    const s = JSON.parse(json);
+    root = s.root; nextId = s.nextId; selected = null;
+  }
+  function pushUndo() {
+    undoStack.push(snapshot());
+    if (undoStack.length > 200) undoStack.shift();
+    redoStack.length = 0;
+    updateButtons();
+  }
+  function updateButtons() {
+    document.getElementById("undo").disabled = !undoStack.length;
+    document.getElementById("redo").disabled = !redoStack.length;
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, snapshot()); } catch (e) { /* storage unavailable */ }
+  }
+  // Call after any change made on the canvas
+  function changed() {
+    if (root) sortChildren(root);
+    if (document.activeElement !== textarea) textarea.value = root ? serialize(root) : "";
+    errorEl.textContent = "";
+    render();
+    renderPanel();
+    save();
+  }
+
+  let parseTimer = null;
+  textarea.addEventListener("input", () => {
+    clearTimeout(parseTimer);
+    parseTimer = setTimeout(() => {
+      try {
+        const tree = parse(textarea.value);
+        pushUndo();
+        root = tree; selected = null;
+        autoLayout();
+        fit();
+        errorEl.textContent = "";
+        render(); renderPanel(); save();
+      } catch (e) {
+        errorEl.textContent = e.message;
+      }
+    }, 350);
+  });
+  textarea.addEventListener("blur", () => { if (root && !errorEl.textContent) textarea.value = serialize(root); });
+
+  // ---------- Selected-node panel ----------
+  function renderPanel() {
+    if (!selected || !root) {
+      nodePanel.className = "node-panel empty";
+      nodePanel.textContent = "Click a node to select it. Click the gold + under a selected node to add a branch.";
+      return;
+    }
+    nodePanel.className = "node-panel";
+    nodePanel.innerHTML = "";
+    const who = document.createElement("span");
+    who.className = "who";
+    who.textContent = "Label";
+    const input = document.createElement("input");
+    input.type = "text"; input.id = "label-input"; input.value = selected.label;
+    input.setAttribute("aria-label", "Node label");
+    let pushed = false;
+    input.addEventListener("input", () => {
+      if (!pushed) { pushUndo(); pushed = true; }
+      selected.label = input.value;
+      textarea.value = serialize(root);
+      render(); save();
+    });
+    input.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === "Escape") input.blur(); });
+    const btn = (text, fn, title) => {
+      const b = document.createElement("button");
+      b.className = "tb"; b.textContent = text; if (title) b.title = title;
+      b.addEventListener("click", fn);
+      return b;
+    };
+    nodePanel.append(who, input,
+      btn("+ Add branch", () => addChild(selected)),
+      btn("Insert parent", insertParent, "Wrap this node in a new node"),
+      btn(selected.triangle ? "Remove triangle" : "Triangle", toggleTriangle, "Draw a triangle over the words below"),
+      btn("Delete", deleteSelected, "Delete this node and everything under it"));
+  }
+  // Edit a label in place, in a text box floating over the node
+  const inlineEdit = document.getElementById("inline-edit");
+  let editing = null, editPushed = false;
+  function focusLabel() {
+    if (!selected) return;
+    editing = selected; editPushed = false;
+    ensureVisible(editing);
+    const sx = editing.x * view.k + view.x, sy = editing.y * view.k + view.y;
+    inlineEdit.style.left = sx + "px";
+    inlineEdit.style.top = sy + "px";
+    inlineEdit.style.width = Math.max(70, nodeWidth(editing) + 40) + "px";
+    inlineEdit.value = editing.label;
+    inlineEdit.hidden = false;
+    inlineEdit.focus({ preventScroll: true });
+    inlineEdit.select();
+  }
+  inlineEdit.addEventListener("input", () => {
+    if (!editing) return;
+    if (!editPushed) { pushUndo(); editPushed = true; }
+    editing.label = inlineEdit.value;
+    inlineEdit.style.width = Math.max(70, nodeWidth(editing) + 40) + "px";
+    render();
+  });
+  function finishEdit() {
+    if (!editing) return;
+    editing = null;
+    inlineEdit.hidden = true;
+    changed();
+  }
+  inlineEdit.addEventListener("blur", finishEdit);
+  inlineEdit.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); inlineEdit.blur(); }
+  });
+
+  // ---------- Editing actions ----------
+  function addChild(parent) {
+    pushUndo();
+    const kids = parent.children;
+    const child = makeNode(kids.length ? "X" : "word");
+    child.y = parent.y + LEVEL;
+    child.x = kids.length ? Math.max(...kids.map(k => k.x)) + nodeWidth(kids[kids.length - 1]) / 2 + GAP + 14 : parent.x;
+    kids.push(child);
+    selected = child;
+    changed();
+    ensureVisible(child);
+    focusLabel();
+  }
+  function insertParent() {
+    if (!selected) return;
+    pushUndo();
+    const n = selected, p = findParent(n);
+    const wrapper = makeNode("X", [n]);
+    wrapper.x = n.x; wrapper.y = n.y;
+    moveSubtree(n, 0, LEVEL);
+    if (p) p.children[p.children.indexOf(n)] = wrapper; else root = wrapper;
+    selected = wrapper;
+    changed();
+    focusLabel();
+  }
+  function toggleTriangle() {
+    if (!selected) return;
+    pushUndo();
+    selected.triangle = !selected.triangle;
+    changed();
+  }
+  function deleteSelected() {
+    if (!selected) return;
+    if (selected === root) { toast("The top node can't be deleted. Use New tree instead."); return; }
+    pushUndo();
+    const p = findParent(selected);
+    p.children.splice(p.children.indexOf(selected), 1);
+    selected = p;
+    changed();
+  }
+
+  // ---------- Pan & zoom ----------
+  function toWorld(e) {
+    const r = stage.getBoundingClientRect();
+    return { x: (e.clientX - r.left - view.x) / view.k, y: (e.clientY - r.top - view.y) / view.k };
+  }
+  function bbox() {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    walk(root, n => {
+      const w = nodeWidth(n) / 2 + 6;
+      x0 = Math.min(x0, n.x - w); x1 = Math.max(x1, n.x + w);
+      y0 = Math.min(y0, n.y - HALF_H); y1 = Math.max(y1, n.y + HALF_H);
+    });
+    return { x0, y0, x1, y1 };
+  }
+  function fit() {
+    if (!root) return;
+    const r = stage.getBoundingClientRect();
+    const b = bbox(), pad = 40;
+    const k = Math.min(2, (r.width - pad * 2) / (b.x1 - b.x0 || 1), (r.height - pad * 2) / (b.y1 - b.y0 || 1));
+    view.k = Math.max(0.2, k);
+    view.x = (r.width - (b.x1 - b.x0) * view.k) / 2 - b.x0 * view.k;
+    view.y = pad - b.y0 * view.k;
+    render();
+  }
+  // Pan so that node n is inside the canvas (with a margin)
+  function ensureVisible(n) {
+    const r = stage.getBoundingClientRect(), m = 60;
+    const sx = n.x * view.k + view.x, sy = n.y * view.k + view.y;
+    if (sx < m) view.x += m - sx; else if (sx > r.width - m) view.x -= sx - (r.width - m);
+    if (sy < m) view.y += m - sy; else if (sy > r.height - m) view.y -= sy - (r.height - m);
+    render();
+  }
+  function zoom(f, cx, cy) {
+    const r = stage.getBoundingClientRect();
+    if (cx === undefined) { cx = r.width / 2; cy = r.height / 2; }
+    const k = Math.min(4, Math.max(0.2, view.k * f));
+    view.x = cx - (cx - view.x) * (k / view.k);
+    view.y = cy - (cy - view.y) * (k / view.k);
+    view.k = k;
+    render();
+  }
+  stage.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r = stage.getBoundingClientRect();
+    zoom(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+  document.getElementById("zin").onclick = () => zoom(1.2);
+  document.getElementById("zout").onclick = () => zoom(1 / 1.2);
+  document.getElementById("zfit").onclick = fit;
+
+  // ---------- Pointer interaction ----------
+  let drag = null;   // {mode: "node"|"pan", ...}
+  let lastTap = { id: 0, t: 0 };   // our own double-click/double-tap detection (the DOM is redrawn between clicks)
+  const byId = id => { let f = null; walk(root, n => { if (n.id === id) f = n; }); return f; };
+
+  function dropTarget(p, moving) {
+    let hit = null;
+    walk(root, n => {
+      if (contains(moving, n)) return;
+      const w = nodeWidth(n) / 2 + 6;
+      if (Math.abs(p.x - n.x) <= w && Math.abs(p.y - n.y) <= HALF_H + 2) hit = n;
+    });
+    return hit;
+  }
+
+  stage.addEventListener("pointerdown", e => {
+    if (e.button !== 0) return;
+    e.preventDefault(); // keep focus where our code puts it (e.g. the label box)
+    if (editing) inlineEdit.blur();
+    if (e.target.closest("[data-plus]")) { addChild(selected); return; }
+    const g = e.target.closest(".node");
+    stage.setPointerCapture(e.pointerId);
+    if (g) {
+      const n = byId(+g.dataset.id);
+      if (selected !== n) { selected = n; render(); renderPanel(); }
+      const now = Date.now();
+      if (lastTap.id === n.id && now - lastTap.t < 400) { lastTap.t = 0; focusLabel(); return; }
+      lastTap = { id: n.id, t: now };
+      drag = { mode: "node", node: n, start: toWorld(e), last: toWorld(e), moved: false, snap: snapshot(), whole: dragWhole && !e.altKey };
+    } else {
+      drag = { mode: "pan", sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y, moved: false };
+      stage.classList.add("panning");
+    }
+  });
+
+  stage.addEventListener("pointermove", e => {
+    if (!drag) return;
+    if (drag.mode === "pan") {
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+      view.x = drag.vx + dx; view.y = drag.vy + dy;
+      world.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`);
+      return;
+    }
+    const p = toWorld(e);
+    if (!drag.moved && Math.hypot(p.x - drag.start.x, p.y - drag.start.y) * view.k < 4) return;
+    drag.moved = true;
+    const dx = p.x - drag.last.x, dy = p.y - drag.last.y;
+    if (drag.whole) moveSubtree(drag.node, dx, dy); else { drag.node.x += dx; drag.node.y += dy; }
+    drag.last = p;
+    drag.target = drag.node === root ? null : dropTarget(p, drag.node);
+    render();
+    world.querySelectorAll(".node").forEach(el => {
+      const id = +el.dataset.id;
+      if (drag.target && id === drag.target.id) el.classList.add("target");
+      if (id === drag.node.id) el.classList.add("dragging");
+    });
+  });
+
+  function endDrag() {
+    if (!drag) return;
+    stage.classList.remove("panning");
+    if (drag.mode === "pan") {
+      if (!drag.moved && selected) { selected = null; render(); renderPanel(); }
+    } else if (drag.moved) {
+      undoStack.push(drag.snap); redoStack.length = 0; updateButtons();
+      const n = drag.node, t = drag.target;
+      if (t && t !== findParent(n)) {
+        // Re-attach the branch under the drop target
+        const p = findParent(n);
+        p.children.splice(p.children.indexOf(n), 1);
+        // Place it just right of the target's existing branches so nothing overlaps
+        let left = t.x - nodeWidth(n) / 2;
+        t.children.forEach(c => walk(c, x => { left = Math.max(left, x.x + nodeWidth(x) / 2 + GAP); }));
+        let nLeft = Infinity;
+        walk(n, x => { nLeft = Math.min(nLeft, x.x - nodeWidth(x) / 2); });
+        moveSubtree(n, left - nLeft, t.y + LEVEL - n.y);
+        t.children.push(n);
+        toast(`Attached under ${t.label || "node"}`);
+      }
+      changed();
+    }
+    drag = null;
+  }
+  stage.addEventListener("pointerup", endDrag);
+  stage.addEventListener("pointercancel", endDrag);
+
+  // ---------- Toolbar ----------
+  document.getElementById("undo").onclick = () => {
+    if (!undoStack.length) return;
+    redoStack.push(snapshot()); restore(undoStack.pop()); updateButtons(); changed();
+  };
+  document.getElementById("redo").onclick = () => {
+    if (!redoStack.length) return;
+    undoStack.push(snapshot()); restore(redoStack.pop()); updateButtons(); changed();
+  };
+  document.getElementById("arrange").onclick = () => { if (!root) return; pushUndo(); autoLayout(); changed(); fit(); };
+  document.getElementById("newtree").onclick = () => {
+    pushUndo();
+    root = makeNode("S"); selected = root;
+    autoLayout(); changed(); fit(); focusLabel();
+  };
+  const dragBtn = document.getElementById("drag-mode");
+  dragBtn.onclick = () => {
+    dragWhole = !dragWhole;
+    dragBtn.textContent = dragWhole ? "Drag: whole branch" : "Drag: single node";
+    dragBtn.classList.toggle("on", !dragWhole);
+  };
+  [opt.color, opt.italic].forEach(o => o.addEventListener("change", () => render()));
+  opt.sort.addEventListener("change", () => changed());
+
+  document.addEventListener("keydown", e => {
+    const typing = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+    if ((e.ctrlKey || e.metaKey) && !typing && e.key.toLowerCase() === "z") {
+      e.preventDefault(); document.getElementById(e.shiftKey ? "redo" : "undo").click();
+    } else if ((e.ctrlKey || e.metaKey) && !typing && e.key.toLowerCase() === "y") {
+      e.preventDefault(); document.getElementById("redo").click();
+    } else if (!typing && selected && (e.key === "Delete" || e.key === "Backspace")) {
+      e.preventDefault(); deleteSelected();
+    } else if (!typing && selected && e.key === "Enter") {
+      e.preventDefault(); focusLabel();
+    }
+  });
+
+  // ---------- Export ----------
+  function exportSVG() {
+    const b = bbox(), pad = 24;
+    const w = Math.ceil(b.x1 - b.x0 + pad * 2), h = Math.ceil(b.y1 - b.y0 + pad * 2);
+    const svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("xmlns", SVGNS);
+    svg.setAttribute("width", w); svg.setAttribute("height", h);
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const bg = document.createElementNS(SVGNS, "rect");
+    bg.setAttribute("width", w); bg.setAttribute("height", h); bg.setAttribute("fill", "#ffffff");
+    const g = document.createElementNS(SVGNS, "g");
+    g.setAttribute("transform", `translate(${pad - b.x0},${pad - b.y0})`);
+    svg.append(bg, g);
+    drawTree(g, true);
+    return { text: new XMLSerializer().serializeToString(svg), w, h };
+  }
+  function download(blob, name) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  document.getElementById("svg").onclick = () => {
+    if (!root) return;
+    download(new Blob([exportSVG().text], { type: "image/svg+xml" }), "syntax-tree.svg");
+  };
+  document.getElementById("png").onclick = () => {
+    if (!root) return;
+    const { text, w, h } = exportSVG();
+    const img = new Image();
+    img.onload = () => {
+      const scale = 3, c = document.createElement("canvas");
+      c.width = w * scale; c.height = h * scale;
+      const ctx = c.getContext("2d");
+      ctx.scale(scale, scale); ctx.drawImage(img, 0, 0);
+      c.toBlob(b => download(b, "syntax-tree.png"), "image/png");
+    };
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(text);
+  };
+  document.getElementById("copy").onclick = async () => {
+    if (!root) return;
+    try { await navigator.clipboard.writeText(serialize(root)); toast("Brackets copied"); }
+    catch { textarea.select(); toast("Press Ctrl+C to copy"); }
+  };
+
+  let toastTimer;
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  // ---------- Start ----------
+  let usingExample = false;
+  function init() {
+    let loaded = false;
+    try {
+      const saved = localStorage.getItem(STORE_KEY);
+      if (saved) { restore(saved); loaded = !!root; }
+    } catch (e) { /* storage unavailable or corrupt */ }
+    if (!loaded) { root = parse(EXAMPLE); autoLayout(); usingExample = true; }
+    textarea.value = serialize(root);
+    updateButtons();
+    render(); renderPanel(); fit();
+  }
+  init();
+  // Re-measure once the web font has loaded, if the tree is still in its auto layout
+  if (document.fonts) document.fonts.ready.then(() => { if (usingExample && !undoStack.length) { autoLayout(); render(); fit(); } });
+  window.addEventListener("resize", () => render());
+})();
+</script>
+</body>
+</html>
