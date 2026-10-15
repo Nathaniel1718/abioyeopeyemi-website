@@ -115,7 +115,7 @@
   #stage {
     display: block; width: 100%; height: min(64vh, 620px); min-height: 380px;
     background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
-    touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: grab;
     background-image: radial-gradient(#ece5d6 1px, transparent 1px); background-size: 20px 20px;
   }
   #stage.panning { cursor: grabbing; }
@@ -162,6 +162,19 @@
   .help h3 { font-size: 1.1rem; color: var(--indigo); margin-bottom: 6px; }
   .help ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.93rem; }
   .help code { background: var(--cream); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 0.88em; color: var(--ink); }
+  .ctx {
+    position: fixed; z-index: 200; min-width: 230px; padding: 6px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgba(31,42,90,0.22);
+  }
+  .ctx .ctx-title { padding: 6px 12px 4px; font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .ctx button {
+    display: block; width: 100%; text-align: left; padding: 9px 12px; border: none; background: none;
+    border-radius: 8px; font: 500 0.93rem 'Noto Sans', sans-serif; color: var(--ink); cursor: pointer;
+  }
+  .ctx button:hover:not(:disabled), .ctx button:focus-visible { background: var(--cream); outline: none; }
+  .ctx button:disabled { opacity: 0.4; cursor: default; }
+  .ctx button.danger { color: var(--clay); }
+  .ctx hr { border: none; border-top: 1px solid var(--line); margin: 4px 6px; }
   .toast {
     position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0;
     background: var(--indigo); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 0.92rem;
@@ -257,6 +270,7 @@
           <li>Double-click a node to rename it.</li>
           <li><strong>Insert parent</strong> wraps a node in a new one (handy for adjunction).</li>
           <li><kbd>Delete</kbd> removes the selected branch.</li>
+          <li>Right-click (or long-press on a phone) a node, line or arrow for more options, including deleting it.</li>
         </ul>
       </div>
       <div class="panel">
@@ -298,6 +312,7 @@
 </footer>
 
 <div class="toast" id="toast" role="status"></div>
+<div class="ctx" id="ctx" role="menu" hidden></div>
 
 <script>
 (() => {
@@ -801,6 +816,25 @@
     changed();
   }
 
+  // Remove just this node; its branches move up to take its place
+  function deleteNodeOnly(n) {
+    if (n === root) {
+      if (n.children.length !== 1) { toast("The top node can only be removed when it has exactly one branch."); return; }
+      pushUndo();
+      root = n.children[0];
+      moveSubtree(root, 0, n.y - root.y);
+      selected = root;
+      changed();
+      return;
+    }
+    pushUndo();
+    const p = findParent(n);
+    n.children.forEach(c => moveSubtree(c, 0, n.y - c.y));
+    p.children.splice(p.children.indexOf(n), 1, ...n.children);
+    selected = p;
+    changed();
+  }
+
   // ---------- Pan & zoom ----------
   function toWorld(e) {
     const r = stage.getBoundingClientRect();
@@ -854,6 +888,7 @@
 
   // ---------- Pointer interaction ----------
   let drag = null;   // {mode: "node"|"pan", ...}
+  let longPress = null;   // timer for long-press menus on touch screens
   let lastTap = { id: 0, t: 0 };   // our own double-click/double-tap detection (the DOM is redrawn between clicks)
 
   function dropTarget(p, moving) {
@@ -879,6 +914,19 @@
       return;
     }
     stage.setPointerCapture(e.pointerId);
+    const menuTarget = targetOf(e.target);
+    if (menuTarget) {
+      const { clientX: x, clientY: y, pointerId } = e;
+      clearTimeout(longPress);
+      longPress = setTimeout(() => {
+        // Held still long enough: cancel the drag and open the menu instead
+        if (!drag || drag.moved) return;
+        drag = null;
+        try { stage.releasePointerCapture(pointerId); } catch (err) { /* already released */ }
+        if (navigator.vibrate) navigator.vibrate(10);
+        openMenu(menuTarget, x, y);
+      }, 550);
+    }
     const arrowHit = e.target.closest("[data-arrow]");
     if (arrowHit) {
       const i = +arrowHit.dataset.arrow;
@@ -919,12 +967,14 @@
     if (drag.mode === "arrow") {
       if (!drag.moved && Math.abs(p.y - drag.sy) * view.k < 3) return;
       drag.moved = true;
+      clearTimeout(longPress);
       drag.arrow.bend = Math.max(-30, drag.bend + (p.y - drag.sy) * 1.33);
       render();
       return;
     }
     if (!drag.moved && Math.hypot(p.x - drag.start.x, p.y - drag.start.y) * view.k < 4) return;
     drag.moved = true;
+    clearTimeout(longPress);
     const dx = p.x - drag.last.x, dy = p.y - drag.last.y;
     if (drag.whole) moveSubtree(drag.node, dx, dy); else { drag.node.x += dx; drag.node.y += dy; }
     drag.last = p;
@@ -938,6 +988,7 @@
   });
 
   function endDrag() {
+    clearTimeout(longPress);
     if (!drag) return;
     stage.classList.remove("panning");
     if (drag.mode === "pan") {
@@ -966,6 +1017,80 @@
   }
   stage.addEventListener("pointerup", endDrag);
   stage.addEventListener("pointercancel", endDrag);
+
+  // ---------- Right-click / long-press menu ----------
+  const ctx = document.getElementById("ctx");
+  function targetOf(el) {
+    const a = el.closest("[data-arrow]");
+    if (a) return { kind: "arrow", index: +a.dataset.arrow };
+    const ed = el.closest("[data-edge]");
+    if (ed) return { kind: "edge", node: byId(+ed.dataset.edge) };
+    const g = el.closest(".node");
+    if (g) return { kind: "node", node: byId(+g.dataset.id) };
+    return null;
+  }
+  function openMenu(t, x, y) {
+    clearTimeout(longPress);
+    const items = [];   // [label, action, {danger, disabled}] or "-"
+    let title;
+    if (t.kind === "arrow") {
+      selected = null; selectedArrow = t.index;
+      const a = arrows[t.index];
+      title = `Arrow: ${byId(a.from).label} → ${byId(a.to).label}`;
+      items.push(["Reverse direction", reverseArrow], ["Reset curve", () => { pushUndo(); a.bend = 0; changed(); }], "-",
+                 ["Delete arrow", deleteArrow, { danger: true }]);
+    } else {
+      const n = t.node;
+      selected = n; selectedArrow = null;
+      const p = findParent(n);
+      const canRemoveOnly = n !== root || n.children.length === 1;
+      if (t.kind === "edge") {
+        title = `Branch: ${p.label} → ${n.label}`;
+        items.push(["Delete this branch", () => deleteSelected(), { danger: true }],
+                   ["Delete only the node below (keep its branches)", () => deleteNodeOnly(n), { danger: true, disabled: !n.children.length }]);
+      } else {
+        title = `Node: ${n.label || "(empty)"}`;
+        items.push(["Rename", focusLabel], ["Add branch", () => addChild(n)], ["Insert parent above", insertParent],
+                   ["Draw movement arrow from here", startArrow], [n.triangle ? "Remove triangle" : "Draw triangle", toggleTriangle], "-",
+                   ["Delete node only (keep what's below)", () => deleteNodeOnly(n), { danger: true, disabled: !canRemoveOnly || !n.children.length }],
+                   ["Delete node and everything below", deleteSelected, { danger: true, disabled: n === root }]);
+      }
+    }
+    render(); renderPanel();
+    ctx.innerHTML = "";
+    const head = document.createElement("div");
+    head.className = "ctx-title"; head.textContent = title;
+    ctx.appendChild(head);
+    items.forEach(it => {
+      if (it === "-") { ctx.appendChild(document.createElement("hr")); return; }
+      const [label, fn, o = {}] = it;
+      const b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "menuitem"); b.textContent = label;
+      if (o.danger) b.className = "danger";
+      b.disabled = !!o.disabled;
+      b.addEventListener("click", () => { closeMenu(); fn(); });
+      ctx.appendChild(b);
+    });
+    ctx.hidden = false;
+    // Keep the menu inside the window
+    const r = ctx.getBoundingClientRect();
+    ctx.style.left = Math.max(8, Math.min(x, innerWidth - r.width - 8)) + "px";
+    ctx.style.top = Math.max(8, Math.min(y, innerHeight - r.height - 8)) + "px";
+    const first = ctx.querySelector("button:not(:disabled)");
+    if (first) first.focus({ preventScroll: true });
+  }
+  function closeMenu() { ctx.hidden = true; }
+  stage.addEventListener("contextmenu", e => {
+    const t = targetOf(e.target);
+    if (!t) return;           // empty canvas: leave the browser's own menu alone
+    e.preventDefault();
+    drag = null;
+    if (!ctx.hidden) return;  // already opened by the long-press timer
+    openMenu(t, e.clientX, e.clientY);
+  });
+  document.addEventListener("pointerdown", e => { if (!ctx.hidden && !ctx.contains(e.target)) closeMenu(); }, true);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !ctx.hidden) { e.stopPropagation(); closeMenu(); } }, true);
+  ["scroll", "resize"].forEach(ev => window.addEventListener(ev, closeMenu));
 
   // ---------- Toolbar ----------
   document.getElementById("undo").onclick = () => {
