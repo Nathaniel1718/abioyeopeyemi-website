@@ -135,6 +135,13 @@
   .node.target .hit { fill: rgba(47,138,87,0.18); stroke: var(--green); stroke-width: 2; }
   .node.dragging { opacity: 0.75; }
   .edge { stroke: var(--ink); stroke-width: 1.3; fill: none; }
+  .edge-hit { stroke: transparent; stroke-width: 14; fill: none; cursor: move; stroke-linecap: round; }
+  .edge-hit:hover { stroke: rgba(217,154,38,0.28); }
+  .arrow { stroke: var(--clay); stroke-width: 1.6; fill: none; }
+  .arrow.selected { stroke: var(--gold-dark); stroke-width: 2.4; }
+  .arrow-hit { stroke: transparent; stroke-width: 14; fill: none; cursor: ns-resize; }
+  .arrow-hit:hover { stroke: rgba(181,80,45,0.15); }
+  #stage.picking, #stage.picking .node { cursor: crosshair; }
   .plus { cursor: pointer; }
   .plus circle { fill: var(--gold); }
   .plus:hover circle { fill: #e8ab3a; }
@@ -199,7 +206,7 @@
     <div class="panel">
       <div class="panel-head">
         <label for="brackets">Labelled bracketing</label>
-        <span class="hint">e.g. <code>[S [NP Adé] [VP [V jẹ] [NP iṣu]]]</code> · <code>^</code> before a label draws a triangle · <code>NP_1</code> gives a subscript</span>
+        <span class="hint">e.g. <code>[S [NP Adé] [VP [V jẹ] [NP iṣu]]]</code> · <code>^</code> before a label draws a triangle · <code>NP_1</code> gives a subscript · <code>-&gt;1</code> … <code>&lt;1&gt;</code> draws a movement arrow</span>
       </div>
       <textarea id="brackets" spellcheck="false" aria-describedby="parse-error"></textarea>
       <div class="error" id="parse-error" aria-live="polite"></div>
@@ -255,10 +262,19 @@
       <div class="panel">
         <h3>Move branches</h3>
         <ul>
-          <li>Drag a node to move it with everything under it.</li>
+          <li>Drag a node, or the line above it, to move it with everything under it.</li>
           <li>Switch to <strong>Drag: single node</strong> to move one node only.</li>
           <li>Drop a branch onto another node (it turns green) to attach it there.</li>
           <li>Drag the empty canvas to pan; use + / − or the mouse wheel to zoom.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Movement arrows</h3>
+        <ul>
+          <li>Select the node that moved (e.g. the trace), click <strong>Arrow</strong>, then click where it landed.</li>
+          <li>Drag an arrow up or down to change how deep it curves.</li>
+          <li>Click an arrow to select it; <kbd>Delete</kbd> removes it, <strong>Reverse</strong> flips it.</li>
+          <li>In brackets: <code>-&gt;1</code> after the moved item, <code>&lt;1&gt;</code> after its landing site, e.g. <code>[NP_i &lt;1&gt; Adé] … [NP t_i -&gt;1]</code>.</li>
         </ul>
       </div>
       <div class="panel">
@@ -291,7 +307,7 @@
   const SVGNS = "http://www.w3.org/2000/svg";
   const FONT_SIZE = 16, LEVEL = 64, GAP = 22, HALF_H = 13;
   const COLORS = { phrase: "#1f2a5a", leaf: "#b5502d", plain: "#22252f" };
-  const STORE_KEY = "syntree-v1";
+  const STORE_KEY = "syntree-v1";   // saved state: {root, nextId, arrows}
   const EXAMPLE = "[S [NP Adé] [VP [V jẹ] [NP iṣu]]]";
 
   const stage = document.getElementById("stage");
@@ -307,7 +323,10 @@
 
   let root = null;          // tree: {id, label, triangle, children[], x, y}
   let nextId = 1;
+  let arrows = [];          // movement arrows: {from: nodeId, to: nodeId, bend}
   let selected = null;
+  let selectedArrow = null; // index into arrows
+  let arrowFrom = null;     // node picked as an arrow's start, waiting for its landing site
   let dragWhole = true;
   let view = { x: 0, y: 0, k: 1 };
   const undoStack = [], redoStack = [];
@@ -332,6 +351,7 @@
   const nodeWidth = n => textWidth(n.label, isLeaf(n) && opt.italic.checked);
 
   // ---------- Tree helpers ----------
+  const byId = id => { let f = null; if (root) walk(root, n => { if (n.id === id) f = n; }); return f; };
   function makeNode(label, children = [], triangle = false) {
     return { id: nextId++, label, triangle, children, x: 0, y: 0 };
   }
@@ -356,8 +376,12 @@
   }
 
   // ---------- Bracket parsing ----------
+  // Arrow markers: "->1" marks where an arrow starts, "<1>" where it lands
+  const MARK_RE = /(?:^|\s)(->(\w+)|<(\w+)>)(?=\s|$)/g;
   function parse(src) {
     let i = 0;
+    const starts = {}, ends = {};
+    const mark = (node, m) => { if (m[2]) starts[m[2]] = node; else ends[m[3]] = node; };
     const s = src.trim();
     if (!s) throw new Error("Type a tree, e.g. [S [NP ...] [VP ...]]");
     const ws = () => { while (i < s.length && /\s/.test(s[i])) i++; };
@@ -368,6 +392,13 @@
       while (i < s.length && !/[\s\[\]]/.test(s[i])) label += s[i++];
       let triangle = false;
       if (label.startsWith("^")) { triangle = true; label = label.slice(1); }
+      const own = [];
+      for (;;) {
+        ws();
+        const m = /^(->(\w+)|<(\w+)>)(?=[\s\[\]]|$)/.exec(s.slice(i));
+        if (!m) break;
+        own.push(m); i += m[0].length;
+      }
       const kids = [];
       for (;;) {
         ws();
@@ -376,23 +407,40 @@
         if (s[i] === "[") { kids.push(node()); continue; }
         let text = "";
         while (i < s.length && s[i] !== "[" && s[i] !== "]") text += s[i++];
-        text = text.trim();
-        if (text) kids.push(makeNode(text));
+        const marks = [...text.matchAll(MARK_RE)];
+        text = text.replace(MARK_RE, " ").trim();
+        if (text) {
+          const leaf = makeNode(text);
+          marks.forEach(m => mark(leaf, m));
+          kids.push(leaf);
+        }
       }
-      return makeNode(label, kids, triangle);
+      const n = makeNode(label, kids, triangle);
+      own.forEach(m => mark(n, m));
+      return n;
     }
     ws();
     const tree = node();
     ws();
     if (i < s.length) throw new Error(`Unexpected text after the tree at character ${i + 1}: "${s.slice(i, i + 12)}"`);
-    return tree;
+    const parsedArrows = [], missing = [];
+    for (const k of new Set([...Object.keys(starts), ...Object.keys(ends)])) {
+      if (starts[k] && ends[k]) parsedArrows.push({ from: starts[k].id, to: ends[k].id, bend: 0 });
+      else missing.push(starts[k] ? `->${k} has no <${k}>` : `<${k}> has no ->${k}`);
+    }
+    return { tree, arrows: parsedArrows, warning: missing.length ? "Arrow not drawn: " + missing.join(", ") : "" };
   }
-  function serialize(n, onlyChild = false) {
-    const kids = n.children;
-    if (kids.length === 0 && n !== root && onlyChild) return n.label;
-    const label = (n.triangle ? "^" : "") + n.label;
+  function serialize(n, onlyChild = false, marks = null) {
+    if (!marks) {
+      marks = new Map();
+      const add = (id, m) => marks.set(id, (marks.get(id) || "") + " " + m);
+      arrows.forEach((a, i) => { add(a.from, "->" + (i + 1)); add(a.to, `<${i + 1}>`); });
+    }
+    const kids = n.children, m = marks.get(n.id) || "";
+    if (kids.length === 0 && n !== root && onlyChild) return n.label + m;
+    const label = (n.triangle ? "^" : "") + n.label + m;
     if (kids.length === 0) return `[${label}]`;
-    const inner = kids.map(c => serialize(c, kids.length === 1)).join(" ");
+    const inner = kids.map(c => serialize(c, kids.length === 1, marks)).join(" ");
     return `[${label} ${inner}]`;
   }
 
@@ -445,8 +493,10 @@
 
   function drawTree(container, forExport) {
     const edges = document.createElementNS(SVGNS, "g");
+    const arrowLayer = document.createElementNS(SVGNS, "g");
     const nodes = document.createElementNS(SVGNS, "g");
-    container.append(edges, nodes);
+    container.append(arrowDefs(), edges, arrowLayer, nodes);
+    drawArrows(arrowLayer, forExport);
     walk(root, (n, p) => {
       if (p) {
         const onlyLeaf = p.triangle && p.children.length === 1 && isLeaf(n);
@@ -463,6 +513,13 @@
         el.setAttribute("class", "edge");
         if (forExport) { el.setAttribute("stroke", COLORS.plain); el.setAttribute("stroke-width", "1.3"); el.setAttribute("fill", "none"); }
         edges.appendChild(el);
+        if (!forExport) {
+          // Wide invisible copy of the line, so the branch itself can be grabbed
+          const hit = el.cloneNode();
+          hit.setAttribute("class", "edge-hit");
+          hit.dataset.edge = n.id;
+          edges.appendChild(hit);
+        }
       }
       const g = document.createElementNS(SVGNS, "g");
       if (!forExport) {
@@ -479,6 +536,81 @@
       g.appendChild(labelEl(n, n.x, n.y, forExport));
       nodes.appendChild(g);
     });
+  }
+
+  // ---------- Movement arrows ----------
+  function arrowDefs() {
+    const defs = document.createElementNS(SVGNS, "defs");
+    defs.innerHTML = [["ah", "#b5502d"], ["ah-sel", "#b97f14"]].map(([id, c]) =>
+      `<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">` +
+      `<path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`).join("");
+    return defs;
+  }
+  // Curve from under the moved item to under its landing site, dipping below everything in between
+  function arrowGeom(a) {
+    const f = byId(a.from), t = byId(a.to);
+    if (!f || !t) return null;
+    // Attach each end below the bottom of that node's subtree, so the arrow never cuts through its words
+    const bottom = n => { let y = n.y; walk(n, x => { if (Math.abs(x.x - n.x) < 30) y = Math.max(y, x.y); }); return y; };
+    const sy = bottom(f) + HALF_H + 5, ty = bottom(t) + HALF_H + 5;
+    const lo = Math.min(f.x, t.x) - 4, hi = Math.max(f.x, t.x) + 4;
+    let deepest = Math.max(f.y, t.y);
+    walk(root, n => { if (n.x >= lo && n.x <= hi) deepest = Math.max(deepest, n.y); });
+    const low = deepest + HALF_H + 34 + (a.bend || 0);
+    return { d: `M${f.x},${sy} C${f.x},${low} ${t.x},${low} ${t.x},${ty}`, low: sy + (low - sy) * 0.75 };
+  }
+  function drawArrows(layer, forExport) {
+    arrows.forEach((a, i) => {
+      const g = arrowGeom(a);
+      if (!g) return;
+      const isSel = !forExport && selectedArrow === i;
+      const path = document.createElementNS(SVGNS, "path");
+      path.setAttribute("d", g.d);
+      path.setAttribute("class", "arrow" + (isSel ? " selected" : ""));
+      path.setAttribute("marker-end", `url(#${isSel ? "ah-sel" : "ah"})`);
+      if (forExport) { path.setAttribute("stroke", "#b5502d"); path.setAttribute("stroke-width", "1.6"); path.setAttribute("fill", "none"); }
+      layer.appendChild(path);
+      if (!forExport) {
+        const hit = document.createElementNS(SVGNS, "path");
+        hit.setAttribute("d", g.d);
+        hit.setAttribute("class", "arrow-hit");
+        hit.dataset.arrow = i;
+        layer.appendChild(hit);
+      }
+    });
+  }
+  function addArrow(from, to) {
+    if (!from || !to || from === to) return;
+    if (arrows.some(a => a.from === from.id && a.to === to.id)) { toast("That arrow already exists"); return; }
+    pushUndo();
+    arrows.push({ from: from.id, to: to.id, bend: 0 });
+    selected = null; selectedArrow = arrows.length - 1;
+    changed();
+    toast("Arrow added. Drag it to change its curve.");
+  }
+  function startArrow() {
+    if (!selected) return;
+    arrowFrom = selected;
+    stage.classList.add("picking");
+    toast("Now click the node where it landed (Esc to cancel)");
+  }
+  function cancelArrow() {
+    arrowFrom = null;
+    stage.classList.remove("picking");
+  }
+  function deleteArrow() {
+    if (selectedArrow === null) return;
+    pushUndo();
+    arrows.splice(selectedArrow, 1);
+    selectedArrow = null;
+    changed();
+  }
+  function reverseArrow() {
+    if (selectedArrow === null) return;
+    pushUndo();
+    const a = arrows[selectedArrow];
+    [a.from, a.to] = [a.to, a.from];
+    changed();
   }
 
   function render() {
@@ -498,10 +630,10 @@
   }
 
   // ---------- State, undo, sync ----------
-  function snapshot() { return JSON.stringify({ root, nextId }); }
+  function snapshot() { return JSON.stringify({ root, nextId, arrows }); }
   function restore(json) {
     const s = JSON.parse(json);
-    root = s.root; nextId = s.nextId; selected = null;
+    root = s.root; nextId = s.nextId; arrows = s.arrows || []; selected = null; selectedArrow = null;
   }
   function pushUndo() {
     undoStack.push(snapshot());
@@ -519,6 +651,8 @@
   // Call after any change made on the canvas
   function changed() {
     if (root) sortChildren(root);
+    arrows = arrows.filter(a => root && byId(a.from) && byId(a.to));   // drop arrows to deleted nodes
+    if (selectedArrow !== null && !arrows[selectedArrow]) selectedArrow = null;
     if (document.activeElement !== textarea) textarea.value = root ? serialize(root) : "";
     errorEl.textContent = "";
     render();
@@ -531,12 +665,12 @@
     clearTimeout(parseTimer);
     parseTimer = setTimeout(() => {
       try {
-        const tree = parse(textarea.value);
+        const parsed = parse(textarea.value);
         pushUndo();
-        root = tree; selected = null;
+        root = parsed.tree; arrows = parsed.arrows; selected = null; selectedArrow = null;
         autoLayout();
         fit();
-        errorEl.textContent = "";
+        errorEl.textContent = parsed.warning;
         render(); renderPanel(); save();
       } catch (e) {
         errorEl.textContent = e.message;
@@ -547,9 +681,20 @@
 
   // ---------- Selected-node panel ----------
   function renderPanel() {
+    if (selectedArrow !== null && arrows[selectedArrow]) {
+      const a = arrows[selectedArrow];
+      nodePanel.className = "node-panel";
+      nodePanel.innerHTML = "";
+      const who = document.createElement("span");
+      who.className = "who";
+      who.textContent = `Movement arrow: ${byId(a.from).label} → ${byId(a.to).label}`;
+      const mk = (text, fn) => { const b = document.createElement("button"); b.className = "tb"; b.textContent = text; b.onclick = fn; return b; };
+      nodePanel.append(who, mk("Reverse", reverseArrow), mk("Reset curve", () => { pushUndo(); a.bend = 0; changed(); }), mk("Delete arrow", deleteArrow));
+      return;
+    }
     if (!selected || !root) {
       nodePanel.className = "node-panel empty";
-      nodePanel.textContent = "Click a node to select it. Click the gold + under a selected node to add a branch.";
+      nodePanel.textContent = "Click a node to select it. Click the gold + under a selected node to add a branch, or Arrow to draw a movement arrow.";
       return;
     }
     nodePanel.className = "node-panel";
@@ -576,6 +721,7 @@
     };
     nodePanel.append(who, input,
       btn("+ Add branch", () => addChild(selected)),
+      btn("Arrow", startArrow, "Draw a movement arrow from this node to where it landed"),
       btn("Insert parent", insertParent, "Wrap this node in a new node"),
       btn(selected.triangle ? "Remove triangle" : "Triangle", toggleTriangle, "Draw a triangle over the words below"),
       btn("Delete", deleteSelected, "Delete this node and everything under it"));
@@ -667,6 +813,7 @@
       x0 = Math.min(x0, n.x - w); x1 = Math.max(x1, n.x + w);
       y0 = Math.min(y0, n.y - HALF_H); y1 = Math.max(y1, n.y + HALF_H);
     });
+    arrows.forEach(a => { const g = arrowGeom(a); if (g) y1 = Math.max(y1, g.low + 6); });
     return { x0, y0, x1, y1 };
   }
   function fit() {
@@ -708,7 +855,6 @@
   // ---------- Pointer interaction ----------
   let drag = null;   // {mode: "node"|"pan", ...}
   let lastTap = { id: 0, t: 0 };   // our own double-click/double-tap detection (the DOM is redrawn between clicks)
-  const byId = id => { let f = null; walk(root, n => { if (n.id === id) f = n; }); return f; };
 
   function dropTarget(p, moving) {
     let hit = null;
@@ -726,10 +872,30 @@
     if (editing) inlineEdit.blur();
     if (e.target.closest("[data-plus]")) { addChild(selected); return; }
     const g = e.target.closest(".node");
+    if (arrowFrom) {
+      const from = arrowFrom;
+      cancelArrow();
+      if (g) addArrow(from, byId(+g.dataset.id));
+      return;
+    }
     stage.setPointerCapture(e.pointerId);
-    if (g) {
-      const n = byId(+g.dataset.id);
+    const arrowHit = e.target.closest("[data-arrow]");
+    if (arrowHit) {
+      const i = +arrowHit.dataset.arrow;
+      selected = null; selectedArrow = i; render(); renderPanel();
+      drag = { mode: "arrow", arrow: arrows[i], sy: toWorld(e).y, bend: arrows[i].bend || 0, moved: false, snap: snapshot() };
+      return;
+    }
+    const edgeHit = e.target.closest("[data-edge]");
+    if (g || edgeHit) {
+      const n = byId(+(g ? g.dataset.id : edgeHit.dataset.edge));
+      selectedArrow = null;
       if (selected !== n) { selected = n; render(); renderPanel(); }
+      if (edgeHit) {
+        // Grabbing a line always moves the whole branch below it
+        drag = { mode: "node", node: n, start: toWorld(e), last: toWorld(e), moved: false, snap: snapshot(), whole: true };
+        return;
+      }
       const now = Date.now();
       if (lastTap.id === n.id && now - lastTap.t < 400) { lastTap.t = 0; focusLabel(); return; }
       lastTap = { id: n.id, t: now };
@@ -750,6 +916,13 @@
       return;
     }
     const p = toWorld(e);
+    if (drag.mode === "arrow") {
+      if (!drag.moved && Math.abs(p.y - drag.sy) * view.k < 3) return;
+      drag.moved = true;
+      drag.arrow.bend = Math.max(-30, drag.bend + (p.y - drag.sy) * 1.33);
+      render();
+      return;
+    }
     if (!drag.moved && Math.hypot(p.x - drag.start.x, p.y - drag.start.y) * view.k < 4) return;
     drag.moved = true;
     const dx = p.x - drag.last.x, dy = p.y - drag.last.y;
@@ -768,7 +941,9 @@
     if (!drag) return;
     stage.classList.remove("panning");
     if (drag.mode === "pan") {
-      if (!drag.moved && selected) { selected = null; render(); renderPanel(); }
+      if (!drag.moved && (selected || selectedArrow !== null)) { selected = null; selectedArrow = null; render(); renderPanel(); }
+    } else if (drag.mode === "arrow") {
+      if (drag.moved) { undoStack.push(drag.snap); redoStack.length = 0; updateButtons(); changed(); }
     } else if (drag.moved) {
       undoStack.push(drag.snap); redoStack.length = 0; updateButtons();
       const n = drag.node, t = drag.target;
@@ -804,7 +979,7 @@
   document.getElementById("arrange").onclick = () => { if (!root) return; pushUndo(); autoLayout(); changed(); fit(); };
   document.getElementById("newtree").onclick = () => {
     pushUndo();
-    root = makeNode("S"); selected = root;
+    root = makeNode("S"); arrows = []; selected = root; selectedArrow = null;
     autoLayout(); changed(); fit(); focusLabel();
   };
   const dragBtn = document.getElementById("drag-mode");
@@ -822,6 +997,10 @@
       e.preventDefault(); document.getElementById(e.shiftKey ? "redo" : "undo").click();
     } else if ((e.ctrlKey || e.metaKey) && !typing && e.key.toLowerCase() === "y") {
       e.preventDefault(); document.getElementById("redo").click();
+    } else if (e.key === "Escape" && arrowFrom) {
+      cancelArrow(); toast("Arrow cancelled");
+    } else if (!typing && selectedArrow !== null && (e.key === "Delete" || e.key === "Backspace")) {
+      e.preventDefault(); deleteArrow();
     } else if (!typing && selected && (e.key === "Delete" || e.key === "Backspace")) {
       e.preventDefault(); deleteSelected();
     } else if (!typing && selected && e.key === "Enter") {
@@ -889,7 +1068,7 @@
       const saved = localStorage.getItem(STORE_KEY);
       if (saved) { restore(saved); loaded = !!root; }
     } catch (e) { /* storage unavailable or corrupt */ }
-    if (!loaded) { root = parse(EXAMPLE); autoLayout(); usingExample = true; }
+    if (!loaded) { const ex = parse(EXAMPLE); root = ex.tree; arrows = ex.arrows; autoLayout(); usingExample = true; }
     textarea.value = serialize(root);
     updateButtons();
     render(); renderPanel(); fit();
