@@ -147,7 +147,8 @@ def build():
         {"@type": "DefinedTermSet", "@id": PAGE_URL + "#set", "name": "Dictionary of Yorùbá Foods",
          "url": PAGE_URL, "inLanguage": ["yo", "en"],
          "description": "Yorùbá food names with tone-marked spellings, IPA, example sentences, pictures and audio.",
-         "creator": {"@type": "Person", "name": "Abíóyè Ọpẹ́yẹmí", "url": SITE + "/"},
+         "creator": {"@type": "Organization", "name": "Group 6, LIN 382: Lexicography and Translation (2024/25)"},
+         "contributor": {"@type": "Person", "name": "Abíóyè Ọpẹ́yẹmí", "url": SITE + "/"},
          "hasDefinedTerm": [
              {"@type": "DefinedTerm", "@id": PAGE_URL + "#" + e["id"], "name": e["word"],
               "description": e["gloss"], "inDefinedTermSet": PAGE_URL + "#set",
@@ -267,6 +268,18 @@ TEMPLATE = """<!DOCTYPE html>
   .eyebrow {{ color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; }}
   .hero h1 {{ font-size: clamp(2.1rem, 5vw, 3.4rem); margin: 10px 0 16px; max-width: 760px; }}
   .hero p.lead {{ font-size: 1.12rem; color: #d6dbf0; max-width: 640px; margin: 0; }}
+  .credit {{ margin: 14px 0 0; font-size: 0.95rem; color: #c9cfe8; }}
+  .credit strong {{ color: #fff; font-weight: 600; }}
+  .about-dict {{
+    margin-top: 48px; background: var(--paper); border: 1px solid var(--line);
+    border-left: 4px solid var(--gold); border-radius: var(--radius); padding: 24px 28px;
+  }}
+  .about-dict h2 {{ font-size: 1.4rem; color: var(--indigo); margin: 6px 0 10px; }}
+  .about-dict p {{ margin: 0 0 8px; color: var(--muted); }}
+  .about-dict dl {{ display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 14px 0 0; }}
+  .about-dict dt {{ font-weight: 600; color: var(--indigo); }}
+  .about-dict dd {{ margin: 0; }}
+  .kicker {{ color: var(--clay); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }}
   .stats {{ display: flex; flex-wrap: wrap; gap: 28px; margin-top: 32px; color: #d6dbf0; font-size: 0.92rem; }}
   .stats strong {{ display: block; font-family: 'Fraunces', serif; font-size: 1.6rem; color: #fff; }}
 
@@ -381,6 +394,7 @@ TEMPLATE = """<!DOCTYPE html>
     <div class="eyebrow">Dictionary · Yorùbá · Food</div>
     <h1>Dictionary of Yorùbá Foods</h1>
     <p class="lead">Names of Yorùbá foods and dishes, with tone-marked spellings, IPA transcriptions, example sentences, pictures and native-speaker recordings.</p>
+    <p class="credit">A class project by <strong>Group 6</strong>, LIN 382: Lexicography and Translation (2024/25), under <strong>Prof. Demola Lewis</strong>.</p>
     <div class="stats">
       <div><strong>{count}</strong>Entries</div>
       <div><strong>{recordings}</strong>Audio recordings</div>
@@ -407,6 +421,18 @@ TEMPLATE = """<!DOCTYPE html>
 {cards}
     </div>
     <p class="empty" id="empty" hidden>No entries match your search.</p>
+
+    <div class="about-dict" id="about">
+      <div class="kicker">About this dictionary</div>
+      <h2>A LIN 382 class project</h2>
+      <p>This dictionary was compiled by Group 6 as a class project for LIN 382: Lexicography and Translation. Each entry gives the tone-marked Yorùbá headword, its IPA transcription, part of speech, an English definition, an example sentence with translation, a picture and an audio recording.</p>
+      <dl>
+        <dt>Course</dt><dd>LIN 382: Lexicography and Translation</dd>
+        <dt>Session</dt><dd>2024/25</dd>
+        <dt>Compiled by</dt><dd>Group 6</dd>
+        <dt>Lecturer</dt><dd>Prof. Demola Lewis</dd>
+      </dl>
+    </div>
 
     <div class="contact">
       <h2>Need Yorùbá language work?</h2>
