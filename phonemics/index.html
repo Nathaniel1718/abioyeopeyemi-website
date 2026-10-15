@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classical Phonemics Tool | Abíóyè Ọpẹ́yẹmí</title>
+<meta name="description" content="Free classical phonemic analysis tool. Paste phonetic field data to get a phone inventory, suspicious pairs, minimal pairs, environments, complementary distribution, draft allophonic rules and a phoneme inventory.">
+<link rel="canonical" href="https://www.abioyeopeyemi.com/phonemics/">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Abíóyè Ọpẹ́yẹmí · Linguistics Hub">
+<meta property="og:title" content="Classical Phonemics Tool">
+<meta property="og:description" content="Paste phonetic field data and get minimal pairs, distributions, allophonic rules and a phoneme inventory.">
+<meta property="og:url" content="https://www.abioyeopeyemi.com/phonemics/">
+<meta property="og:image" content="https://www.abioyeopeyemi.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Classical Phonemics Tool","url":"https://www.abioyeopeyemi.com/phonemics/","applicationCategory":"EducationalApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0"},"creator":{"@type":"Person","name":"Abíóyè Ọpẹ́yẹmí","url":"https://www.abioyeopeyemi.com/"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1f2a5a;
+    --indigo-2: #2d3b7a;
+    --gold: #d99a26;
+    --gold-dark: #b97f14;
+    --clay: #b5502d;
+    --cream: #faf6ee;
+    --paper: #ffffff;
+    --ink: #22252f;
+    --muted: #5f6475;
+    --line: #e7e1d4;
+    --green: #2f8a57;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.6;
+  }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.2; margin: 0; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  /* Nav */
+  header.nav { position: sticky; top: 0; z-index: 50; background: rgba(31, 42, 90, 0.97); color: #fff; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+  .brand { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; white-space: nowrap; }
+  .brand span { color: var(--gold); }
+  .nav-links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { text-decoration: none; font-size: 0.92rem; padding: 6px 10px; border-radius: 8px; color: #dfe3f5; white-space: nowrap; }
+  .nav-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-links a.cta { background: var(--gold); color: var(--indigo); font-weight: 600; }
+  .nav-links a.cta:hover { background: #e8ab3a; }
+
+  /* Hero */
+  .hero {
+    background:
+      radial-gradient(circle at 85% 20%, rgba(217,154,38,0.25), transparent 40%),
+      linear-gradient(135deg, var(--indigo) 0%, var(--indigo-2) 100%);
+    color: #fff; padding: 40px 0 44px; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+    background-size: 22px 22px; pointer-events: none;
+  }
+  .hero .wrap { position: relative; z-index: 1; }
+  .crumb { font-size: 0.88rem; color: #c9cfe8; margin-bottom: 12px; }
+  .crumb a { color: #fff; text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .eyebrow { color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.9rem); margin: 8px 0 12px; }
+  .hero p.lead { font-size: 1.05rem; color: #d6dbf0; max-width: 700px; margin: 0; }
+
+  /* Panels */
+  section { padding: 28px 0 56px; }
+  .panel {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px; margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 1.35rem; color: var(--indigo); margin-bottom: 4px; }
+  .step { color: var(--clay); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .sub { color: var(--muted); font-size: 0.93rem; margin: 0 0 12px; }
+  .hint { font-size: 0.85rem; color: var(--muted); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+  textarea {
+    width: 100%; min-height: 220px; resize: vertical; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--cream); color: var(--ink);
+    font: 1.02rem/1.6 'Noto Sans', 'Charis SIL', 'Doulos SIL', sans-serif;
+  }
+  textarea:focus, input[type="text"]:focus, select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  input[type="text"], select {
+    padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--cream);
+    font: 0.95rem 'Noto Sans', sans-serif; color: var(--ink);
+  }
+  label.check { display: inline-flex; gap: 6px; align-items: center; font-size: 0.92rem; color: var(--muted); cursor: pointer; }
+  .tb {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--paper); color: var(--indigo);
+    font: 600 0.88rem 'Noto Sans', sans-serif; cursor: pointer; white-space: nowrap;
+  }
+  .tb:hover:not(:disabled) { border-color: var(--gold); }
+  .tb:disabled { opacity: 0.4; cursor: default; }
+  .tb.primary { background: var(--gold); border-color: var(--gold); }
+  .tb.primary:hover:not(:disabled) { background: #e8ab3a; }
+  .error { color: var(--clay); font-size: 0.88rem; margin-top: 6px; }
+
+  .ipa-kb { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0 12px; }
+  .ipa-kb button {
+    min-width: 34px; height: 34px; padding: 0 6px; border-radius: 7px; border: 1px solid var(--line);
+    background: var(--paper); font: 1rem 'Noto Sans', sans-serif; cursor: pointer; color: var(--ink);
+  }
+  .ipa-kb button:hover { border-color: var(--gold); background: var(--cream); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 12px; color: var(--muted); font-size: 0.9rem; }
+  .stats strong { display: block; font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--indigo); }
+
+  /* Inventory chips */
+  .inv-group { margin-top: 10px; }
+  .inv-group h3 { font-size: 1rem; color: var(--indigo); margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 10px; border-radius: 99px;
+    border: 1px solid var(--line); background: var(--paper); cursor: pointer; font: 1.05rem 'Noto Sans', sans-serif; color: var(--ink);
+  }
+  .chip small { font-size: 0.75rem; color: var(--muted); }
+  .chip:hover { border-color: var(--gold); }
+  .chip.a { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+  .chip.b { background: var(--clay); border-color: var(--clay); color: #fff; }
+  .chip.a small, .chip.b small { color: #e8e4f5; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.ipa, .ipa { font-family: 'Noto Sans', 'Charis SIL', 'Doulos SIL', sans-serif; font-size: 1.02rem; }
+  .gloss { color: var(--muted); font-style: italic; }
+
+  .badge { display: inline-block; font-size: 0.74rem; font-weight: 700; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+  .v-contrast { background: rgba(31,42,90,0.1); color: var(--indigo); }
+  .v-allo { background: rgba(47,138,87,0.13); color: var(--green); }
+  .v-free { background: rgba(217,154,38,0.18); color: var(--gold-dark); }
+  .v-unclear { background: rgba(95,100,117,0.12); color: var(--muted); }
+
+  /* Pair analysis */
+  .pair-pick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .pair-pick select { min-width: 90px; font-size: 1.05rem; }
+  .verdict {
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; border-left: 4px solid var(--muted); background: var(--cream);
+  }
+  .verdict h3 { font-size: 1.15rem; margin-bottom: 4px; color: var(--indigo); }
+  .verdict p { margin: 4px 0 0; }
+  .verdict.contrast { border-color: var(--indigo); }
+  .verdict.allo { border-color: var(--green); }
+  .verdict.free { border-color: var(--gold); }
+  .rule {
+    display: inline-block; margin-top: 8px; padding: 6px 12px; background: var(--paper); border: 1px solid var(--line);
+    border-radius: 8px; font-size: 1.08rem; font-family: 'Noto Sans', 'Charis SIL', sans-serif;
+  }
+  .evidence { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 14px; }
+  .evidence > div { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .evidence h4 { margin: 0 0 6px; font-size: 0.95rem; color: var(--indigo); }
+  .evidence ul { margin: 0; padding-left: 18px; font-size: 0.93rem; }
+  .evidence .none { color: var(--muted); font-size: 0.9rem; }
+  .env-cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .env-cols h4 { margin: 0 0 6px; color: var(--indigo); }
+  .envsum { font-size: 0.92rem; margin: 6px 0 10px; }
+  .envsum b { color: var(--indigo); }
+  .group-box { margin-top: 14px; padding: 12px 14px; border: 1px dashed var(--green); border-radius: 10px; }
+  .group-box .row { margin-top: 6px; }
+
+  /* Phoneme inventory */
+  .phonemes { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .phoneme { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .phoneme .sym { font-size: 1.35rem; font-weight: 600; color: var(--indigo); }
+  .phoneme .allos { font-size: 1rem; }
+  .phoneme .r { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+  .phoneme button { margin-top: 6px; }
+
+  .help { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .help .panel { margin: 0; }
+  .help h3 { font-size: 1.1rem; color: var(--indigo); margin-bottom: 6px; }
+  .help ul, .help ol { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.93rem; }
+  .help code { background: var(--cream); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; color: var(--ink); }
+  .empty { color: var(--muted); font-size: 0.93rem; }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0;
+    background: var(--indigo); color: #fff; padding: 10px 16px; border-radius: 10px; font-size: 0.92rem;
+    transition: opacity .2s, transform .2s; pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%); }
+
+  footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  footer a { color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">Abíóyè <span>Ọpẹ́yẹmí</span></a>
+    <nav class="nav-links">
+      <a href="/#services">Services</a>
+      <a href="/#tools">Tools</a>
+      <a href="/#dictionaries">Dictionaries</a>
+      <a href="/#learn">Learn</a>
+      <a href="/#research">Research</a>
+      <a href="/#work">Our Work</a>
+      <a href="/#about">About</a>
+      <a href="/#quote" class="cta">Hire Us</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="/">Home</a> › <a href="/#tools">Tools</a> › Classical Phonemics Tool</div>
+    <div class="eyebrow">Free tool · Phonology</div>
+    <h1>Classical Phonemics Tool</h1>
+    <p class="lead">Paste phonetic field data and work through a classical phonemic analysis: phone inventory, suspicious pairs, minimal pairs, environments, complementary distribution, draft allophonic rules and the phoneme inventory.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+
+    <!-- 1. Data -->
+    <div class="panel">
+      <div class="step">Step 1</div>
+      <h2>Field data</h2>
+      <p class="sub">One word per line: phonetic form, then gloss. For example <span class="ipa">[pʰala] 'hand'</span>, <span class="ipa">pʰala  hand</span> or <span class="ipa">pʰala - hand</span>.</p>
+      <div class="row">
+        <label class="check" for="example">Load example:</label>
+        <select id="example">
+          <option value="">Choose…</option>
+          <option value="practice">Practice language (made-up data)</option>
+          <option value="english">English stop aspiration</option>
+        </select>
+        <button class="tb" id="clear">Clear</button>
+      </div>
+      <div class="ipa-kb" id="ipa-kb" aria-label="IPA symbols"></div>
+      <textarea id="data" spellcheck="false" aria-label="Field data"></textarea>
+      <div class="error" id="data-error" aria-live="polite"></div>
+      <div class="row" style="margin-top:10px">
+        <label class="check"><input type="checkbox" id="opt-tone" checked> Ignore tone marks</label>
+        <label class="check"><input type="checkbox" id="opt-prosody" checked> Ignore stress and syllable marks</label>
+        <label class="check" for="opt-multi">Treat as one segment:</label>
+        <input type="text" id="opt-multi" placeholder="e.g. ts, dz, kp, gb" size="18">
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <!-- 2. Inventory -->
+    <div class="panel">
+      <div class="step">Step 2</div>
+      <h2>Phone inventory</h2>
+      <p class="sub">Every phone in the data, with how often it occurs. Click two phones to compare them in Step 4.</p>
+      <div id="inventory"><p class="empty">Add some data above.</p></div>
+    </div>
+
+    <!-- 3. Suspicious pairs -->
+    <div class="panel">
+      <div class="step">Step 3</div>
+      <h2>Suspicious pairs</h2>
+      <p class="sub">Phonetically similar phones that could be allophones of one phoneme, each with a first verdict. Choose one to examine.</p>
+      <div class="table-wrap" id="pairs"><p class="empty">No suspicious pairs yet.</p></div>
+    </div>
+
+    <!-- 4. Pair analysis -->
+    <div class="panel" id="analysis-panel">
+      <div class="step">Step 4</div>
+      <h2>Pair analysis</h2>
+      <p class="sub">Minimal pairs, environments and distribution for two phones.</p>
+      <div class="pair-pick">
+        <select id="pick-a" aria-label="First phone"></select>
+        <button class="tb" id="swap" title="Swap">⇄</button>
+        <select id="pick-b" aria-label="Second phone"></select>
+      </div>
+      <div id="analysis"><p class="empty">Choose two phones.</p></div>
+    </div>
+
+    <!-- 5. Phonemes -->
+    <div class="panel">
+      <div class="step">Step 5</div>
+      <h2>Phoneme inventory</h2>
+      <p class="sub">Phones you group as allophones are merged here. Every other phone is treated as its own phoneme.</p>
+      <div id="phonemes"><p class="empty">Add some data above.</p></div>
+      <h3 style="font-size:1.05rem;color:var(--indigo);margin:18px 0 6px">Data in phonemic transcription</h3>
+      <div class="table-wrap" id="phonemic"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="tb primary" id="dl-report">Download report</button>
+        <button class="tb" id="copy-report">Copy report</button>
+      </div>
+    </div>
+
+    <div class="help">
+      <div class="panel">
+        <h3>Entering data</h3>
+        <ul>
+          <li>One entry per line; the gloss can be in quotes or after a tab or dash.</li>
+          <li>Brackets <code>[ ]</code> or slashes <code>/ /</code> around the form are optional.</li>
+          <li>Diacritics stay with their sound: <code>pʰ</code>, <code>aː</code>, <code>ã</code>, <code>k͡p</code>.</li>
+          <li>List sequences such as <code>ts</code> or <code>kp</code> under “Treat as one segment” if they are single sounds.</li>
+          <li>Lines starting with <code>#</code> are ignored. Your data is saved in this browser.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>How verdicts are reached</h3>
+        <ol>
+          <li><b>Minimal pairs</b> with different meanings: separate phonemes.</li>
+          <li><b>Identical environments</b> (same sound on both sides): contrast is likely.</li>
+          <li><b>Same meaning, either sound</b>: free variation.</li>
+          <li><b>Never in the same environment</b>, with a clear conditioning side: complementary distribution, so allophones.</li>
+          <li>Otherwise the result is inconclusive and more data is needed.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h3>Good practice</h3>
+        <ul>
+          <li>The tool drafts rules; check that each one makes phonetic sense.</li>
+          <li>The allophone with the wider distribution is suggested as the basic form; you can choose the other.</li>
+          <li>Small data sets give tentative results: phones that occur only once or twice are flagged.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>© <span id="year"></span> Abíóyè Ọpẹ́yẹmí · Linguistics Hub</div>
+    <div><a href="mailto:abioye1718@gmail.com">abioye1718@gmail.com</a></div>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  "use strict";
+  document.getElementById("year").textContent = new Date().getFullYear();
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const STORE_KEY = "phonemics-v1";
+
+  // ---------- Example data ----------
+  const EXAMPLES = {
+    practice: `# Practice language (made-up data for practice)
+[pala] 'hand'
+[bala] 'sky'
+[kipo] 'cloth'
+[kibo] 'fire'
+[sapa] 'rope'
+[ʃimu] 'fish'
+[sulo] 'stone'
+[ʃila] 'water'
+[tʰosa] 'to go'
+[maʃi] 'night'
+[pesu] 'foot'
+[koʃi] 'bird'
+[sena] 'tree'
+[luso] 'rain'
+[ʃiko] 'child'
+[nisa] 'eye'
+[tʰapa] 'leaf'
+[mata] 'mother'
+[kotu] 'basket'
+[lami] 'salt'
+[rami] 'salt'
+[boli] 'goat'
+[tʰumi] 'hill'
+[bita] 'path'`,
+    english: `# English voiceless stops
+[pʰɪn] 'pin'
+[spɪn] 'spin'
+[tʰɒp] 'top'
+[stɒp] 'stop'
+[kʰɪt] 'kit'
+[skɪt] 'skit'
+[pʰæt] 'pat'
+[spæt] 'spat'
+[tʰæp] 'tap'
+[kʰæt] 'cat'
+[skæn] 'scan'
+[ækt] 'act'
+[æpt] 'apt'
+[kʰɒt] 'cot'`,
+  };
+
+  // ---------- IPA keyboard ----------
+  const KEYS = ["ʃ", "ʒ", "ŋ", "ɲ", "ɡ", "ʔ", "ɾ", "ɹ", "θ", "ð", "ɸ", "β", "x", "ɣ", "χ", "ʁ", "ħ", "ɦ", "ʎ", "ɥ",
+    "ɛ", "ɔ", "ə", "ɪ", "ʊ", "æ", "ɑ", "ɒ", "ʌ", "ɨ", "ʉ", "ɯ", "ø", "œ",
+    "ʰ", "ʷ", "ʲ", "ː", "̃", "̥", "̩", "k͡p", "ɡ͡b", "t͡ʃ", "d͡ʒ"];
+  const kb = $("ipa-kb");
+  KEYS.forEach(k => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = /^\p{M}$/u.test(k) ? "◌" + k : k;
+    b.title = "Insert " + k;
+    b.addEventListener("click", () => {
+      const t = $("data"), s = t.selectionStart, e = t.selectionEnd;
+      t.value = t.value.slice(0, s) + k + t.value.slice(e);
+      t.focus();
+      t.selectionStart = t.selectionEnd = s + k.length;
+      t.dispatchEvent(new Event("input"));
+    });
+    kb.appendChild(b);
+  });
+
+  // ---------- Phonetic features ----------
+  // Consonants: [voiced, place, manner]
+  const C = {};
+  const addC = (syms, voice, place, manner) => syms.split(" ").forEach((s, i) => { C[s] = { type: "C", voice: Array.isArray(voice) ? voice[i] : voice, place, manner }; });
+  addC("p b", [false, true], "bilabial", "stop"); addC("m", true, "bilabial", "nasal"); addC("ʙ", true, "bilabial", "trill");
+  addC("ɸ β", [false, true], "bilabial", "fricative"); addC("f v", [false, true], "labiodental", "fricative");
+  addC("ɱ", true, "labiodental", "nasal"); addC("ʋ", true, "labiodental", "approximant");
+  addC("θ ð", [false, true], "dental", "fricative");
+  addC("t d", [false, true], "alveolar", "stop"); addC("n", true, "alveolar", "nasal"); addC("r", true, "alveolar", "trill");
+  addC("ɾ", true, "alveolar", "tap"); addC("s z", [false, true], "alveolar", "fricative"); addC("ɬ ɮ", [false, true], "alveolar", "lateral fricative");
+  addC("ɹ", true, "alveolar", "approximant"); addC("l", true, "alveolar", "lateral");
+  addC("ts dz t͡s d͡z", [false, true, false, true], "alveolar", "affricate");
+  addC("ʃ ʒ", [false, true], "postalveolar", "fricative"); addC("tʃ dʒ t͡ʃ d͡ʒ", [false, true, false, true], "postalveolar", "affricate");
+  addC("ʈ ɖ", [false, true], "retroflex", "stop"); addC("ɳ", true, "retroflex", "nasal"); addC("ɽ", true, "retroflex", "tap");
+  addC("ʂ ʐ", [false, true], "retroflex", "fricative"); addC("ɻ", true, "retroflex", "approximant"); addC("ɭ", true, "retroflex", "lateral");
+  addC("c ɟ", [false, true], "palatal", "stop"); addC("ɲ", true, "palatal", "nasal"); addC("ç ʝ", [false, true], "palatal", "fricative");
+  addC("j", true, "palatal", "approximant"); addC("ʎ", true, "palatal", "lateral");
+  addC("k g ɡ", [false, true, true], "velar", "stop"); addC("ŋ", true, "velar", "nasal"); addC("x ɣ", [false, true], "velar", "fricative");
+  addC("ɰ", true, "velar", "approximant"); addC("ʟ", true, "velar", "lateral");
+  addC("q ɢ", [false, true], "uvular", "stop"); addC("ɴ", true, "uvular", "nasal"); addC("ʀ", true, "uvular", "trill");
+  addC("χ ʁ", [false, true], "uvular", "fricative"); addC("ħ ʕ", [false, true], "pharyngeal", "fricative");
+  addC("ʔ", false, "glottal", "stop"); addC("h ɦ", [false, true], "glottal", "fricative");
+  addC("w ʍ", [true, false], "labial-velar", "approximant"); addC("ɥ", true, "labial-palatal", "approximant");
+  addC("kp gb k͡p ɡ͡b g͡b", [false, true, false, true, true], "labial-velar", "stop"); addC("ŋm ŋ͡m", true, "labial-velar", "nasal");
+  addC("ɓ ɗ ʄ ɠ ʛ", true, "", "implosive");
+  ["ɓ:bilabial", "ɗ:alveolar", "ʄ:palatal", "ɠ:velar", "ʛ:uvular"].forEach(x => { const [k, pl] = x.split(":"); C[k].place = pl; });
+  const PLACES = ["bilabial", "labiodental", "dental", "alveolar", "postalveolar", "retroflex", "palatal", "labial-palatal", "velar", "labial-velar", "uvular", "pharyngeal", "glottal"];
+  const COARSE_PLACE = { bilabial: "labial", labiodental: "labial", dental: "coronal", alveolar: "coronal", postalveolar: "coronal", retroflex: "coronal",
+    palatal: "dorsal", velar: "dorsal", uvular: "dorsal", "labial-velar": "labial-velar", "labial-palatal": "labial-palatal", pharyngeal: "guttural", glottal: "guttural" };
+  // Vowels: [height, backness, rounded]
+  const V = {};
+  const addV = (sym, height, back, round) => { V[sym] = { type: "V", height, back, round }; };
+  [["i", 0, "front", false], ["y", 0, "front", true], ["ɨ", 0, "central", false], ["ʉ", 0, "central", true], ["ɯ", 0, "back", false], ["u", 0, "back", true],
+   ["ɪ", 1, "front", false], ["ʏ", 1, "front", true], ["ʊ", 1, "back", true],
+   ["e", 2, "front", false], ["ø", 2, "front", true], ["ɘ", 2, "central", false], ["ɵ", 2, "central", true], ["ɤ", 2, "back", false], ["o", 2, "back", true],
+   ["ə", 3, "central", false],
+   ["ɛ", 4, "front", false], ["œ", 4, "front", true], ["ɜ", 4, "central", false], ["ɞ", 4, "central", true], ["ʌ", 4, "back", false], ["ɔ", 4, "back", true],
+   ["æ", 5, "front", false], ["ɐ", 5, "central", false],
+   ["a", 6, "front", false], ["ɶ", 6, "front", true], ["ɑ", 6, "back", false], ["ɒ", 6, "back", true]].forEach(v => addV(...v));
+  const HEIGHT_NAME = ["close", "near-close", "close-mid", "mid", "open-mid", "near-open", "open"];
+  const COARSE_HEIGHT = h => h <= 1 ? "high" : h <= 4 ? "mid" : "low";
+  // Diacritics and modifier letters
+  const MODS = { "ʰ": "aspirated", "ʷ": "labialised", "ʲ": "palatalised", "ˠ": "velarised", "ˤ": "pharyngealised", "ː": "long", "ˑ": "half-long",
+    "ʼ": "ejective", "ⁿ": "nasally released", "ˡ": "laterally released", "˞": "rhotic",
+    "̃": "nasalised", "̥": "voiceless", "̊": "voiceless", "̬": "voiced", "̩": "syllabic", "̍": "syllabic",
+    "̯": "non-syllabic", "̤": "breathy", "̰": "creaky", "̚": "unreleased", "̹": "more rounded", "̜": "less rounded",
+    "̟": "advanced", "̠": "retracted", "̈": "centralised", "̝": "raised", "̞": "lowered", "̘": "ATR", "̙": "RTR", "̪": "dental" };
+  const TIES = "͜͡";
+
+  const featCache = new Map();
+  function feat(seg) {
+    if (featCache.has(seg)) return featCache.get(seg);
+    const nfd = seg.normalize("NFD");
+    let base = "", rest = "";
+    // Longest known base at the start of the segment
+    for (let len = Math.min(4, nfd.length); len >= 1; len--) {
+      const cand = nfd.slice(0, len).normalize("NFC");
+      if (C[cand] || V[cand]) { base = cand; rest = nfd.slice(len); break; }
+    }
+    let f = null;
+    if (base) {
+      f = { ...(C[base] || V[base]), base, mods: [] };
+      for (const ch of rest) {
+        if (TIES.includes(ch)) continue;
+        if (MODS[ch]) f.mods.push(MODS[ch]);
+      }
+      if (f.mods.includes("voiceless")) f.voice = false;
+      if (f.mods.includes("voiced")) f.voice = true;
+    }
+    featCache.set(seg, f);
+    return f;
+  }
+
+  // ---------- Segmentation ----------
+  const TONE_RE = /[̀́̂̄̋̌̏᷄-᷉˥˦˧˨˩]/g;
+  const PROSODY_RE = /[ˈˌ.|‖]/g;
+  function segmentWord(word, multi) {
+    const s = word.normalize("NFD");
+    const out = [];
+    let i = 0;
+    while (i < s.length) {
+      const m = multi.find(g => s.startsWith(g, i));
+      let seg;
+      if (m) { seg = m; i += m.length; }
+      else { seg = s[i++]; if (/\p{M}/u.test(seg) && out.length) { out[out.length - 1] += seg; continue; } }
+      while (i < s.length) {
+        const ch = s[i];
+        if (TIES.includes(ch) && i + 1 < s.length) { seg += ch + s[i + 1]; i += 2; }
+        else if (/\p{M}/u.test(ch) || MODS[ch]) { seg += ch; i++; }
+        else break;
+      }
+      out.push(seg.normalize("NFC"));
+    }
+    return out;
+  }
+  function parseData(text, opts) {
+    const multi = opts.multi.split(/[,\s]+/).map(x => x.trim().normalize("NFD")).filter(Boolean).sort((a, b) => b.length - a.length);
+    const entries = [], problems = [];
+    text.split(/\r?\n/).forEach((line, ln) => {
+      let l = line.trim();
+      if (!l || l.startsWith("#")) return;
+      l = l.replace(/^\d+[.)]\s*/, "");
+      let form, gloss;
+      const br = /^[\[\/](.+?)[\]\/]\s*(.*)$/.exec(l);
+      if (br) { form = br[1]; gloss = br[2]; }
+      else {
+        const parts = l.split(/\t|\s+[-–=:]\s+|\s{2,}/);
+        if (parts.length > 1) { form = parts[0]; gloss = parts.slice(1).join(" "); }
+        else { const sp = l.indexOf(" "); form = sp < 0 ? l : l.slice(0, sp); gloss = sp < 0 ? "" : l.slice(sp + 1); }
+      }
+      gloss = gloss.replace(/^[-–=:]\s*/, "").replace(/^['‘’"“”]+|['‘’"“”]+$/g, "").trim();
+      let f = form.trim().normalize("NFD");
+      if (opts.tone) f = f.replace(TONE_RE, "");
+      if (opts.prosody) f = f.replace(PROSODY_RE, "");
+      const words = f.split(/\s+/).filter(Boolean);
+      if (!words.length) { problems.push(ln + 1); return; }
+      const segs = [];
+      words.forEach((w, wi) => { if (wi) segs.push("#"); segs.push(...segmentWord(w, multi)); });
+      entries.push({ form: form.trim().normalize("NFC"), gloss, segs, line: ln + 1 });
+    });
+    return { entries, problems };
+  }
+
+  // ---------- Natural classes ----------
+  const plural = m => ({ stop: "stops", nasal: "nasals", trill: "trills", tap: "taps", fricative: "fricatives", "lateral fricative": "lateral fricatives",
+    approximant: "approximants", lateral: "laterals", affricate: "affricates", implosive: "implosives" }[m] || m);
+  function describe(set) {
+    const segs = [...set].filter(x => x !== "#");
+    const hasB = set.has("#");
+    const list = segs.length ? "{" + segs.join(", ") + "}" : "";
+    if (!segs.length) return hasB ? "a word boundary (#)" : "";
+    const fs = segs.map(feat);
+    let phrase = "";
+    if (fs.every(f => f && f.type === "V")) {
+      const same = k => fs.every(f => f[k] === fs[0][k]);
+      const parts = [];
+      if (fs.every(f => COARSE_HEIGHT(f.height) === COARSE_HEIGHT(fs[0].height))) parts.push(COARSE_HEIGHT(fs[0].height));
+      if (same("back")) parts.push(fs[0].back);
+      if (same("round") && fs.length > 1) parts.push(fs[0].round ? "rounded" : "unrounded");
+      if (fs.every(f => f.mods.includes("nasalised"))) parts.push("nasalised");
+      phrase = (parts.length ? parts.join(" ") + " " : "") + "vowels";
+    } else if (fs.every(f => f && f.type === "C")) {
+      const parts = [];
+      if (fs.every(f => f.voice === fs[0].voice)) parts.push(fs[0].voice ? "voiced" : "voiceless");
+      if (fs.every(f => f.place === fs[0].place)) parts.push(fs[0].place);
+      else if (fs.every(f => COARSE_PLACE[f.place] === COARSE_PLACE[fs[0].place])) parts.push(COARSE_PLACE[fs[0].place]);
+      if (fs.every(f => f.manner === fs[0].manner)) parts.push(plural(fs[0].manner)); else parts.push("consonants");
+      phrase = parts.join(" ");
+    } else if (fs.every(f => f)) {
+      phrase = "";
+    }
+    return (phrase ? phrase + " " : "") + list + (hasB ? " or a word boundary (#)" : "");
+  }
+  // Compact rule notation: "_ i", "_ {i, e}", "# _"
+  const compact = set => { const l = [...set]; return l.length === 1 ? l[0] : "{" + l.join(", ") + "}"; };
+  const seqName = (side, set) => side === "next" ? `_ ${compact(set)}` : `${compact(set)} _`;
+
+  // ---------- Pair analysis ----------
+  const normGloss = g => g.toLowerCase().replace(/^to /, "").trim();
+  function occurrences(entries, x) {
+    const occ = [];
+    entries.forEach(e => e.segs.forEach((s, i) => {
+      if (s === x) occ.push({ e, i, prev: i > 0 ? e.segs[i - 1] : "#", next: i < e.segs.length - 1 ? e.segs[i + 1] : "#" });
+    }));
+    return occ;
+  }
+  function analysePair(entries, a, b) {
+    const oa = occurrences(entries, a), ob = occurrences(entries, b);
+    const setOf = (o, k) => new Set(o.map(x => x[k]));
+    const envOf = o => new Set(o.map(x => x.prev + "_" + x.next));
+    const PA = setOf(oa, "prev"), PB = setOf(ob, "prev"), NA = setOf(oa, "next"), NB = setOf(ob, "next");
+    const EA = envOf(oa), EB = envOf(ob);
+    const inter = (x, y) => [...x].filter(v => y.has(v));
+    const minimal = [], free = [];
+    const seen = new Set();
+    for (const x of oa) for (const y of ob) {
+      const s1 = x.e.segs, s2 = y.e.segs;
+      if (s1.length !== s2.length || x.i !== y.i) continue;
+      let diff = 0;
+      for (let k = 0; k < s1.length; k++) if (s1[k] !== s2[k]) diff++;
+      if (diff !== 1) continue;
+      const key = x.e.line + ":" + y.e.line;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      (normGloss(x.e.gloss) && normGloss(x.e.gloss) === normGloss(y.e.gloss) ? free : minimal).push([x.e, y.e]);
+    }
+    const sharedEnv = inter(EA, EB);
+    const analogous = sharedEnv.map(env => ({
+      env, a: oa.filter(o => o.prev + "_" + o.next === env).map(o => o.e), b: ob.filter(o => o.prev + "_" + o.next === env).map(o => o.e),
+    })).filter(x => !x.a.every(ea => x.b.every(eb => free.some(([p, q]) => (p === ea && q === eb)) || minimal.some(([p, q]) => p === ea && q === eb))));
+    const nextDisjoint = !inter(NA, NB).length, prevDisjoint = !inter(PA, PB).length;
+
+    let verdict, cls, text, rule = null, basic = null, restricted = null;
+    if (!oa.length || !ob.length) {
+      verdict = "Not enough data"; cls = "unclear"; text = `One of the phones does not occur in the data.`;
+    } else if (minimal.length) {
+      verdict = "Contrastive: separate phonemes"; cls = "contrast";
+      text = `${minimal.length} minimal pair${minimal.length > 1 ? "s" : ""} show that [${a}] and [${b}] distinguish meaning, so they belong to different phonemes, /${a}/ and /${b}/.`;
+    } else if (analogous.length) {
+      verdict = "Contrast likely: same environments"; cls = "contrast";
+      text = `No minimal pair, but [${a}] and [${b}] occur in identical environments (${analogous.map(x => x.env.replace("_", " _ ")).join("; ")}). Phones that share an environment are not conditioned by it, so they are probably separate phonemes. Look for a true minimal pair to confirm.`;
+    } else if (free.length) {
+      verdict = "Free variation"; cls = "free";
+      text = `The same word appears with either [${a}] or [${b}] without a change in meaning, so they are in free variation: allophones of one phoneme.`;
+    } else if (nextDisjoint || prevDisjoint) {
+      cls = "allo"; verdict = "Complementary distribution: allophones";
+      const side = nextDisjoint ? "next" : "prev";
+      const SA = side === "next" ? NA : PA, SB = side === "next" ? NB : PB;
+      // The phone with the narrower, more describable distribution is the conditioned one
+      const score = (set, x) => set.size * 10 + (feat(x) ? feat(x).mods.length : 0) * -3;
+      if (score(SA, a) >= score(SB, b)) { basic = a; restricted = b; } else { basic = b; restricted = a; }
+      const RS = restricted === a ? SA : SB;
+      rule = `/${basic}/ → [${restricted}] / ${seqName(side, RS)};  [${basic}] elsewhere`;
+      text = `[${a}] and [${b}] never occur in the same environment: they differ consistently in what ${side === "next" ? "follows" : "precedes"} them. ` +
+        `[${restricted}] occurs only ${side === "next" ? "before" : "after"} ${describe(RS)}, and [${basic}] occurs in the remaining environments, so [${basic}] is suggested as the basic allophone.`;
+      if (similarity(a, b) === 0) text += ` Check that the two sounds are phonetically similar enough to be one phoneme: complementary distribution alone is not proof (English [h] and [ŋ] never share an environment, yet are separate phonemes).`;
+    } else {
+      verdict = "Inconclusive"; cls = "unclear";
+      text = `[${a}] and [${b}] never share an exact environment, but neither the preceding nor the following sound separates them cleanly. Collect more data, especially near-minimal pairs.`;
+    }
+    const thin = [[a, oa.length], [b, ob.length]].filter(([, n]) => n > 0 && n < 3).map(([x, n]) => `[${x}] occurs only ${n} time${n > 1 ? "s" : ""}`);
+    return { a, b, oa, ob, PA, PB, NA, NB, minimal, free, analogous, verdict, cls, text, rule, basic, restricted, thin };
+  }
+
+  // ---------- Suspicious pairs ----------
+  function similarity(x, y) {
+    const fx = feat(x), fy = feat(y);
+    if (!fx || !fy) return x.normalize("NFD")[0] === y.normalize("NFD")[0] ? 3 : 0;
+    if (fx.type !== fy.type) return 0;
+    if (fx.base === fy.base) return 3;           // differ only in diacritics, e.g. p / pʰ
+    let diff = 0;
+    if (fx.type === "C") {
+      if (fx.voice !== fy.voice) diff++;
+      if (fx.manner !== fy.manner) diff++;
+      if (fx.place !== fy.place) {
+        const near = COARSE_PLACE[fx.place] === COARSE_PLACE[fy.place] || Math.abs(PLACES.indexOf(fx.place) - PLACES.indexOf(fy.place)) === 1;
+        diff += near ? 1 : 3;
+      }
+    } else {
+      if (Math.abs(fx.height - fy.height) > 2) return 0;
+      if (fx.height !== fy.height) diff++;
+      if (fx.back !== fy.back) diff++;
+      if (fx.round !== fy.round) diff++;
+    }
+    if (fx.mods.join() !== fy.mods.join()) diff++;
+    return diff <= 1 ? 2 : 0;
+  }
+
+  // ---------- State ----------
+  let entries = [], phones = [], counts = new Map();
+  let groups = [];        // [{phoneme, members:[...], rule}]
+  let pickA = "", pickB = "";
+  const opts = () => ({ tone: $("opt-tone").checked, prosody: $("opt-prosody").checked, multi: $("opt-multi").value });
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ data: $("data").value, opts: opts(), groups, pickA, pickB })); } catch (e) { /* storage unavailable */ }
+  }
+  const phonemeOf = p => { const g = groups.find(g => g.members.includes(p)); return g ? g.phoneme : p; };
+
+  function analyse() {
+    featCache.clear();
+    const res = parseData($("data").value, opts());
+    entries = res.entries;
+    $("data-error").textContent = res.problems.length ? `Could not read line ${res.problems.join(", ")}.` : "";
+    counts = new Map();
+    entries.forEach(e => e.segs.forEach(s => { if (s !== "#") counts.set(s, (counts.get(s) || 0) + 1); }));
+    const order = s => { const f = feat(s); return f ? (f.type === "C" ? 0 : 1) : 2; };
+    phones = [...counts.keys()].sort((x, y) => order(x) - order(y) || x.localeCompare(y));
+    groups = groups.map(g => ({ ...g, members: g.members.filter(m => counts.has(m)) })).filter(g => g.members.length > 1);
+    if (!counts.has(pickA)) pickA = "";
+    if (!counts.has(pickB)) pickB = "";
+    renderStats(); renderInventory(); renderPairs(); renderPickers(); renderAnalysis(); renderPhonemes();
+    save();
+  }
+
+  function renderStats() {
+    const tokens = [...counts.values()].reduce((s, n) => s + n, 0);
+    $("stats").innerHTML = entries.length ? `<div><strong>${entries.length}</strong>Entries</div><div><strong>${phones.length}</strong>Different phones</div><div><strong>${tokens}</strong>Phone tokens</div>` : "";
+  }
+
+  function renderInventory() {
+    const el = $("inventory");
+    if (!phones.length) { el.innerHTML = `<p class="empty">Add some data above.</p>`; return; }
+    const groupsOf = { Consonants: [], Vowels: [], "Other symbols": [] };
+    phones.forEach(p => { const f = feat(p); groupsOf[f ? (f.type === "C" ? "Consonants" : "Vowels") : "Other symbols"].push(p); });
+    el.innerHTML = Object.entries(groupsOf).filter(([, l]) => l.length).map(([name, list]) => `<div class="inv-group"><h3>${name}</h3><div class="chips">` +
+      list.map(p => `<button class="chip${p === pickA ? " a" : p === pickB ? " b" : ""}" data-phone="${esc(p)}" title="${esc(p)}: ${counts.get(p)} occurrence(s)">${esc(p)} <small>${counts.get(p)}</small></button>`).join("") +
+      `</div></div>`).join("");
+    el.querySelectorAll("[data-phone]").forEach(b => b.addEventListener("click", () => {
+      const p = b.dataset.phone;
+      if (p === pickA) pickA = "";
+      else if (p === pickB) pickB = "";
+      else if (!pickA) pickA = p;
+      else if (!pickB) pickB = p;
+      else { pickA = pickB; pickB = p; }
+      renderInventory(); renderPickers(); renderAnalysis(); save();
+      if (pickA && pickB) $("analysis-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+  }
+
+  function suspiciousPairs() {
+    const out = [];
+    for (let i = 0; i < phones.length; i++) for (let j = i + 1; j < phones.length; j++) {
+      const s = similarity(phones[i], phones[j]);
+      if (s) out.push({ a: phones[i], b: phones[j], s });
+    }
+    return out.sort((x, y) => y.s - x.s || (counts.get(y.a) + counts.get(y.b)) - (counts.get(x.a) + counts.get(x.b))).slice(0, 20);
+  }
+  function renderPairs() {
+    const el = $("pairs");
+    const list = suspiciousPairs();
+    if (!list.length) { el.innerHTML = `<p class="empty">No phonetically similar pairs found${phones.length ? "" : " yet"}. You can still compare any two phones in Step 4.</p>`; return; }
+    el.innerHTML = `<table><thead><tr><th>Pair</th><th>Minimal pairs</th><th>First verdict</th><th></th></tr></thead><tbody>` +
+      list.map(({ a, b }) => {
+        const r = analysePair(entries, a, b);
+        return `<tr><td class="ipa">[${esc(a)}] – [${esc(b)}]</td><td>${r.minimal.length || "–"}</td>` +
+          `<td><span class="badge v-${r.cls}">${esc(r.verdict)}</span></td>` +
+          `<td><button class="tb" data-a="${esc(a)}" data-b="${esc(b)}">Examine</button></td></tr>`;
+      }).join("") + `</tbody></table>`;
+    el.querySelectorAll("button[data-a]").forEach(btn => btn.addEventListener("click", () => {
+      pickA = btn.dataset.a; pickB = btn.dataset.b;
+      renderInventory(); renderPickers(); renderAnalysis(); save();
+      $("analysis-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+  }
+
+  function renderPickers() {
+    const opt = sel => `<option value="">Phone…</option>` + phones.map(p => `<option${p === sel ? " selected" : ""}>${esc(p)}</option>`).join("");
+    $("pick-a").innerHTML = opt(pickA);
+    $("pick-b").innerHTML = opt(pickB);
+  }
+  $("pick-a").addEventListener("change", e => { pickA = e.target.value; renderInventory(); renderAnalysis(); save(); });
+  $("pick-b").addEventListener("change", e => { pickB = e.target.value; renderInventory(); renderAnalysis(); save(); });
+  $("swap").addEventListener("click", () => { [pickA, pickB] = [pickB, pickA]; renderInventory(); renderPickers(); renderAnalysis(); save(); });
+
+  const word = e => `<span class="ipa">[${esc(e.form)}]</span>${e.gloss ? ` <span class="gloss">'${esc(e.gloss)}'</span>` : ""}`;
+  function envTable(occ, x) {
+    if (!occ.length) return `<p class="empty">[${esc(x)}] does not occur.</p>`;
+    return `<div class="table-wrap"><table><thead><tr><th>Environment</th><th>Word</th></tr></thead><tbody>` +
+      occ.map(o => `<tr><td class="ipa">${esc(o.prev)} _ ${esc(o.next)}</td><td>${word(o.e)}</td></tr>`).join("") + `</tbody></table></div>`;
+  }
+  function renderAnalysis() {
+    const el = $("analysis");
+    if (!pickA || !pickB || pickA === pickB) { el.innerHTML = `<p class="empty">Choose two different phones, from the menus above, the inventory, or the suspicious pairs.</p>`; return; }
+    const r = analysePair(entries, pickA, pickB);
+    const li = items => items.length ? `<ul>${items.join("")}</ul>` : `<p class="none">None found.</p>`;
+    const grouped = groups.some(g => g.members.includes(pickA) && g.members.includes(pickB));
+    let html = `<div class="verdict ${r.cls}"><span class="badge v-${r.cls}">${esc(r.verdict)}</span><p>${esc(r.text)}</p>` +
+      (r.rule ? `<div class="rule">${esc(r.rule)}</div>` : "") +
+      (r.thin.length ? `<p class="hint">Tentative: ${esc(r.thin.join("; "))}.</p>` : "") + `</div>`;
+    html += `<div class="evidence">` +
+      `<div><h4>Minimal pairs</h4>${li(r.minimal.map(([x, y]) => `<li>${word(x)} ~ ${word(y)}</li>`))}</div>` +
+      `<div><h4>Identical environments</h4>${li(r.analogous.map(x => `<li><span class="ipa">${esc(x.env.replace("_", " _ "))}</span>: ${x.a.map(word).join(", ")} vs ${x.b.map(word).join(", ")}</li>`))}</div>` +
+      `<div><h4>Free variation (same meaning)</h4>${li(r.free.map(([x, y]) => `<li>${word(x)} ~ ${word(y)}</li>`))}</div>` +
+      `</div>`;
+    const sum = (x, P, N) => `<div class="envsum"><b>Before [${esc(x)}]:</b> ${esc(describe(P))}<br><b>After [${esc(x)}]:</b> ${esc(describe(N))}</div>`;
+    html += `<div class="env-cols"><div><h4 class="ipa">[${esc(pickA)}] · ${r.oa.length} occurrence(s)</h4>${sum(pickA, r.PA, r.NA)}${envTable(r.oa, pickA)}</div>` +
+      `<div><h4 class="ipa">[${esc(pickB)}] · ${r.ob.length} occurrence(s)</h4>${sum(pickB, r.PB, r.NB)}${envTable(r.ob, pickB)}</div></div>`;
+    if (grouped) {
+      html += `<div class="group-box">[${esc(pickA)}] and [${esc(pickB)}] are grouped as allophones of /${esc(phonemeOf(pickA))}/ in Step 5.</div>`;
+    } else if (r.cls === "allo" || r.cls === "free") {
+      const sug = r.basic || pickA;
+      html += `<div class="group-box"><b>Group these as allophones of one phoneme</b><div class="row">` +
+        `<label class="check"><input type="radio" name="basic" value="${esc(pickA)}"${sug === pickA ? " checked" : ""}> /${esc(pickA)}/</label>` +
+        `<label class="check"><input type="radio" name="basic" value="${esc(pickB)}"${sug === pickB ? " checked" : ""}> /${esc(pickB)}/</label>` +
+        `<button class="tb primary" id="do-group">Group as allophones</button></div></div>`;
+    } else if (r.cls === "unclear") {
+      html += `<div class="group-box"><b>Decide yourself:</b> if you are sure from other evidence, you can still group them. <button class="tb" id="do-group">Group as allophones of /${esc(pickA)}/</button></div>`;
+    }
+    el.innerHTML = html;
+    const btn = $("do-group");
+    if (btn) btn.addEventListener("click", () => {
+      const chosen = el.querySelector("input[name=basic]:checked");
+      groupPair(pickA, pickB, chosen ? chosen.value : pickA, r.rule && (chosen ? chosen.value : pickA) === r.basic ? r.rule : r.cls === "free" ? `[${pickA}] ~ [${pickB}] in free variation` : "");
+    });
+  }
+
+  function groupPair(a, b, phoneme, rule) {
+    const touching = groups.filter(g => g.members.includes(a) || g.members.includes(b));
+    const members = [...new Set([a, b, ...touching.flatMap(g => g.members)])];
+    const rules = [...touching.map(g => g.rule).filter(Boolean), rule].filter(Boolean);
+    const target = touching.find(g => g.members.includes(phoneme)) ? touching.find(g => g.members.includes(phoneme)).phoneme : phoneme;
+    groups = groups.filter(g => !touching.includes(g));
+    groups.push({ phoneme: target, members, rule: rules.join("\n") });
+    toast(`Grouped as allophones of /${target}/`);
+    renderAnalysis(); renderPhonemes(); save();
+  }
+
+  function renderPhonemes() {
+    const el = $("phonemes");
+    if (!phones.length) { el.innerHTML = `<p class="empty">Add some data above.</p>`; $("phonemic").innerHTML = ""; return; }
+    const set = [...new Set(phones.map(phonemeOf))];
+    const order = s => { const f = feat(s); return f ? (f.type === "C" ? 0 : 1) : 2; };
+    set.sort((x, y) => order(x) - order(y) || x.localeCompare(y));
+    const section = (title, list) => list.length ? `<div class="inv-group"><h3>${title} (${list.length})</h3><div class="phonemes">` + list.map(p => {
+      const g = groups.find(g => g.phoneme === p);
+      if (!g) return `<div class="phoneme"><div class="sym ipa">/${esc(p)}/</div><div class="allos ipa">[${esc(p)}]</div></div>`;
+      return `<div class="phoneme"><div class="sym ipa">/${esc(p)}/</div><div class="allos ipa">${g.members.map(m => `[${esc(m)}]`).join(", ")}</div>` +
+        (g.rule ? `<div class="r ipa">${esc(g.rule).replace(/\n/g, "<br>")}</div>` : "") +
+        `<button class="tb" data-ungroup="${esc(p)}">Ungroup</button></div>`;
+    }).join("") + `</div></div>` : "";
+    el.innerHTML = section("Consonant phonemes", set.filter(p => order(p) === 0)) + section("Vowel phonemes", set.filter(p => order(p) === 1)) + section("Other", set.filter(p => order(p) === 2));
+    el.querySelectorAll("[data-ungroup]").forEach(b => b.addEventListener("click", () => {
+      groups = groups.filter(g => g.phoneme !== b.dataset.ungroup);
+      renderAnalysis(); renderPhonemes(); save();
+    }));
+    $("phonemic").innerHTML = `<table><thead><tr><th>Phonetic</th><th>Phonemic</th><th>Gloss</th></tr></thead><tbody>` +
+      entries.map(e => `<tr><td class="ipa">[${esc(e.segs.join("").replace(/#/g, " "))}]</td><td class="ipa">/${esc(e.segs.map(s => s === "#" ? " " : phonemeOf(s)).join(""))}/</td><td class="gloss">${esc(e.gloss)}</td></tr>`).join("") +
+      `</tbody></table>`;
+  }
+
+  // ---------- Report ----------
+  function report() {
+    const L = [];
+    L.push("CLASSICAL PHONEMIC ANALYSIS", "Generated with the Classical Phonemics Tool, https://www.abioyeopeyemi.com/phonemics/", "");
+    L.push(`Data: ${entries.length} entries, ${phones.length} phones`, "");
+    L.push("PHONE INVENTORY", phones.map(p => `[${p}] ×${counts.get(p)}`).join("  "), "");
+    L.push("SUSPICIOUS PAIRS");
+    suspiciousPairs().forEach(({ a, b }) => {
+      const r = analysePair(entries, a, b);
+      L.push(`- [${a}] / [${b}]: ${r.verdict}`);
+      r.minimal.forEach(([x, y]) => L.push(`    minimal pair: [${x.form}] '${x.gloss}' ~ [${y.form}] '${y.gloss}'`));
+      r.free.forEach(([x, y]) => L.push(`    free variation: [${x.form}] ~ [${y.form}] '${x.gloss}'`));
+      if (r.rule) L.push(`    rule: ${r.rule}`);
+    });
+    L.push("", "PHONEME INVENTORY");
+    [...new Set(phones.map(phonemeOf))].forEach(p => {
+      const g = groups.find(g => g.phoneme === p);
+      L.push(`/${p}/: ${g ? g.members.map(m => `[${m}]`).join(", ") : `[${p}]`}${g && g.rule ? "   " + g.rule.replace(/\n/g, "; ") : ""}`);
+    });
+    L.push("", "PHONEMIC TRANSCRIPTION");
+    entries.forEach(e => L.push(`[${e.segs.join("").replace(/#/g, " ")}]  /${e.segs.map(s => s === "#" ? " " : phonemeOf(s)).join("")}/  '${e.gloss}'`));
+    return L.join("\n");
+  }
+  $("dl-report").addEventListener("click", () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([report()], { type: "text/plain;charset=utf-8" }));
+    a.download = "phonemic-analysis.txt";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  $("copy-report").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(report()); toast("Report copied"); } catch { toast("Copy failed: use Download instead"); }
+  });
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  // ---------- Wiring ----------
+  let timer;
+  const schedule = () => { clearTimeout(timer); timer = setTimeout(analyse, 300); };
+  $("data").addEventListener("input", schedule);
+  ["opt-tone", "opt-prosody"].forEach(id => $(id).addEventListener("change", analyse));
+  $("opt-multi").addEventListener("input", schedule);
+  $("example").addEventListener("change", e => {
+    if (!e.target.value) return;
+    $("data").value = EXAMPLES[e.target.value];
+    groups = []; pickA = ""; pickB = "";
+    e.target.value = "";
+    analyse();
+  });
+  $("clear").addEventListener("click", () => { $("data").value = ""; groups = []; pickA = ""; pickB = ""; analyse(); $("data").focus(); });
+
+  (function init() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) { /* storage unavailable */ }
+    if (saved && saved.data) {
+      $("data").value = saved.data;
+      $("opt-tone").checked = saved.opts ? saved.opts.tone : true;
+      $("opt-prosody").checked = saved.opts ? saved.opts.prosody : true;
+      $("opt-multi").value = saved.opts ? saved.opts.multi || "" : "";
+      groups = saved.groups || []; pickA = saved.pickA || ""; pickB = saved.pickB || "";
+    } else {
+      $("data").value = EXAMPLES.practice;
+      pickA = "s"; pickB = "ʃ";
+    }
+    analyse();
+  })();
+})();
+</script>
+</body>
+</html>
