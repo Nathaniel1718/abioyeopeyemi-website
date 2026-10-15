@@ -380,7 +380,6 @@ TEMPLATE = """<!DOCTYPE html>
       <a href="/#dictionaries">Dictionaries</a>
       <a href="/#learn">Learn</a>
       <a href="/#research">Research</a>
-      <a href="/#work">Our Work</a>
       <a href="/#about">About</a>
       <a href="/#contact" class="cta">Hire Us</a>
     </nav>
