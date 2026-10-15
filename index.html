@@ -300,6 +300,18 @@
   .about { display: grid; gap: 32px; grid-template-columns: 1fr; align-items: center; }
   @media (min-width: 760px) { .about { grid-template-columns: 280px 1fr; } }
   .about .placeholder { height: 300px; }
+  .monogram, .portrait {
+    width: 100%; max-width: 280px; aspect-ratio: 1; border-radius: var(--radius); margin: 0 auto; object-fit: cover; display: block;
+  }
+  .monogram {
+    display: grid; place-items: center; position: relative; overflow: hidden;
+    background: radial-gradient(circle at 80% 15%, rgba(217,154,38,0.35), transparent 45%), linear-gradient(135deg, var(--indigo), var(--indigo-2));
+  }
+  .monogram::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.09) 1.5px, transparent 1.5px); background-size: 18px 18px;
+  }
+  .monogram span { position: relative; z-index: 1; font-family: 'Fraunces', serif; font-weight: 700; font-size: 5.5rem; color: var(--gold); letter-spacing: 0.02em; }
   .about p { color: var(--muted); }
 
   /* Contact */
@@ -350,7 +362,6 @@
       <a href="#dictionaries">Dictionaries</a>
       <a href="#learn">Learn</a>
       <a href="#research">Research</a>
-      <a href="#work">Our Work</a>
       <a href="#about">About</a>
       <a href="#contact" class="cta">Hire Us</a>
     </nav>
@@ -368,10 +379,9 @@
       <a href="#tools" class="btn btn-ghost">Try Our Free Tools</a>
     </div>
     <div class="stats">
-      <!-- PLACEHOLDER: update these numbers as you grow -->
-      <div><strong>6+</strong>Services</div>
-      <div><strong>4</strong>Live Yorùbá tools</div>
-      <div><strong>9</strong>Fields of linguistics</div>
+      <div><strong>7</strong>Services</div>
+      <div><strong>4</strong>Free language tools</div>
+      <div><strong>2</strong>Online dictionaries</div>
     </div>
   </div>
 </div>
@@ -545,7 +555,6 @@
         <span class="badge soon">Coming soon</span>
         <h3>Video Tutorials</h3>
         <p>Step-by-step lessons on YouTube, including ELAN and Praat walkthroughs.</p>
-        <!-- PLACEHOLDER: replace # with your YouTube channel link -->
         <a class="card-link" href="https://www.youtube.com/@abioyeopeyemi4222" target="_blank" rel="noopener">Visit YouTube channel →</a>
       </div>
       <div class="card soon">
@@ -626,7 +635,8 @@
 </section>
 
 <!-- ============ OUR WORK (portfolio) ============ -->
-<section id="work" class="alt">
+<!-- Hidden until real samples are ready: remove "hidden" and add the menu link back to show it -->
+<section id="work" class="alt" hidden>
   <div class="wrap">
     <div class="section-head">
       <div class="kicker">Portfolio</div>
@@ -660,7 +670,8 @@
 </section>
 
 <!-- ============ TESTIMONIALS ============ -->
-<section id="testimonials">
+<!-- Hidden until real testimonials (shared with permission) are ready: remove "hidden" to show it -->
+<section id="testimonials" hidden>
   <div class="wrap">
     <div class="section-head">
       <div class="kicker">Trusted by</div>
@@ -697,8 +708,8 @@
 <!-- ============ ABOUT ============ -->
 <section id="about" class="alt">
   <div class="wrap about">
-    <!-- PLACEHOLDER: replace with <img src="photo.jpg" alt="Abíóyè Ọpẹ́yẹmí"> -->
-    <div class="placeholder"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Your photo here</div></div>
+    <!-- To use a photo instead: <img class="portrait" src="photo.jpg" alt="Abíóyè Ọpẹ́yẹmí"> -->
+    <div class="monogram" role="img" aria-label="Abíóyè Ọpẹ́yẹmí"><span>AỌ</span></div>
     <div>
       <div class="kicker">About</div>
       <h2 style="color: var(--indigo); font-size: clamp(1.6rem, 3.5vw, 2.2rem); margin: 6px 0 12px;">Abíóyè Ọpẹ́yẹmí</h2>
