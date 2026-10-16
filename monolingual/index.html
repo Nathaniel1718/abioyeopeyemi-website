@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="yo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yorùbá Monolingual Dictionary | Abíóyè Ọpẹ́yẹmí</title>
+<meta name="description" content="A Yorùbá monolingual dictionary: Yorùbá words defined in Yorùbá, with transcriptions and example sentences.">
+<link rel="canonical" href="https://www.abioyeopeyemi.com/monolingual/">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Abíóyè Ọpẹ́yẹmí · Linguistics Hub">
+<meta property="og:title" content="Yorùbá Monolingual Dictionary">
+<meta property="og:description" content="Yorùbá words defined in Yorùbá, with transcriptions and example sentences.">
+<meta property="og:url" content="https://www.abioyeopeyemi.com/monolingual/">
+<meta property="og:image" content="https://www.abioyeopeyemi.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --indigo: #1f2a5a;
+    --indigo-2: #2d3b7a;
+    --gold: #d99a26;
+    --gold-dark: #b97f14;
+    --clay: #b5502d;
+    --cream: #faf6ee;
+    --paper: #ffffff;
+    --ink: #22252f;
+    --muted: #5f6475;
+    --line: #e7e1d4;
+    --green: #2f8a57;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Noto Sans', 'Segoe UI', sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; }
+  a { color: inherit; }
+  h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; line-height: 1.2; margin: 0; }
+  /* Fraunces misplaces tone marks on dotted vowels (ọ̀, ẹ̀), so Yorùbá headings use Noto Serif */
+  .hero h1, .entry h2, .welcome h2 { font-family: 'Noto Serif', Georgia, serif; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+  .wrap.wide { max-width: 1100px; }
+
+  /* Nav */
+  header.nav { position: sticky; top: 0; z-index: 50; background: rgba(31, 42, 90, 0.97); color: #fff; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 60px; }
+  .brand { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; white-space: nowrap; }
+  .brand span { color: var(--gold); }
+  .nav-links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { text-decoration: none; font-size: 0.92rem; padding: 6px 10px; border-radius: 8px; color: #dfe3f5; white-space: nowrap; }
+  .nav-links a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-links a.cta { background: var(--gold); color: var(--indigo); font-weight: 600; }
+  .nav-links a.cta:hover { background: #e8ab3a; }
+
+  /* Hero with search */
+  .hero {
+    background:
+      radial-gradient(circle at 85% 20%, rgba(217,154,38,0.25), transparent 40%),
+      linear-gradient(135deg, var(--indigo) 0%, var(--indigo-2) 100%);
+    color: #fff; padding: 40px 0 48px; position: relative;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(rgba(255,255,255,0.08) 1.5px, transparent 1.5px); background-size: 22px 22px;
+  }
+  .hero .wrap { position: relative; z-index: 2; }
+  .crumb { font-size: 0.88rem; color: #c9cfe8; margin-bottom: 12px; }
+  .crumb a { color: #fff; text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
+  .eyebrow { color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; }
+  .hero h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); margin: 8px 0 6px; }
+  .hero p.lead { font-size: 1.05rem; color: #d6dbf0; margin: 0 0 22px; }
+
+  .search { position: relative; }
+  .search input {
+    width: 100%; padding: 16px 52px 16px 18px; border-radius: 12px; border: none; font: 1.15rem 'Noto Sans', sans-serif;
+    color: var(--ink); background: #fff; box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  }
+  .search input:focus { outline: 3px solid var(--gold); }
+  .search button.go {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 10px;
+    border: none; background: var(--gold); color: var(--indigo); cursor: pointer; display: grid; place-items: center;
+  }
+  .search button.go svg { width: 20px; height: 20px; }
+  .suggest {
+    position: absolute; left: 0; right: 0; top: calc(100% + 6px); background: #fff; color: var(--ink); border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2); list-style: none; margin: 0; padding: 6px; z-index: 20; max-height: 360px; overflow-y: auto;
+  }
+  .suggest li { padding: 9px 12px; border-radius: 8px; cursor: pointer; font-size: 1.05rem; }
+  .suggest li.active, .suggest li:hover { background: var(--cream); }
+  .tone-tip { font-size: 0.85rem; color: #c9cfe8; margin-top: 10px; }
+
+  /* Results */
+  main { padding: 32px 0 56px; }
+  .status { color: var(--muted); text-align: center; padding: 18px 0; }
+  .status.err { color: var(--clay); }
+  .entry {
+    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 28px;
+  }
+  .entry h2 { font-size: clamp(2rem, 5vw, 2.6rem); color: var(--indigo); }
+  .meta { margin: 6px 0 4px; color: var(--muted); font-size: 1rem; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+  .meta .ipa { font-family: 'Noto Sans', 'Charis SIL', 'Doulos SIL', sans-serif; font-size: 1.05rem; color: var(--ink); }
+  .meta .pos { color: var(--clay); font-style: italic; font-weight: 600; }
+  ol.senses { margin: 16px 0 0; padding-left: 22px; }
+  ol.senses.single { list-style: none; padding-left: 0; }
+  ol.senses > li { margin-bottom: 16px; padding-left: 4px; }
+  ol.senses > li::marker { color: var(--gold-dark); font-weight: 700; }
+  .sense-pos { color: var(--clay); font-style: italic; font-weight: 600; margin-right: 6px; }
+  .def { font-size: 1.1rem; }
+  .ex {
+    margin: 8px 0 0; padding: 8px 14px; border-left: 3px solid var(--gold); background: var(--cream);
+    border-radius: 0 8px 8px 0; font-style: italic;
+  }
+  .label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-style: normal; display: block; }
+  .actions { margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tb {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--indigo); font: 600 0.88rem 'Noto Sans', sans-serif; cursor: pointer; text-decoration: none;
+  }
+  .tb:hover { border-color: var(--gold); }
+  .welcome { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 26px; }
+  .welcome h2 { font-size: 1.35rem; color: var(--indigo); margin-bottom: 6px; }
+  .welcome p { margin: 6px 0; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .chip { padding: 6px 14px; border-radius: 99px; border: 1px solid var(--line); background: var(--cream); cursor: pointer; font: 1rem 'Noto Sans', sans-serif; color: var(--indigo); }
+  .chip:hover { border-color: var(--gold); }
+  .rights { margin-top: 28px; font-size: 0.82rem; color: var(--muted); text-align: center; }
+
+  footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  footer a { color: #fff; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap wide nav-inner">
+    <a href="/" class="brand">Abíóyè <span>Ọpẹ́yẹmí</span></a>
+    <nav class="nav-links" lang="en">
+      <a href="/#services">Services</a>
+      <a href="/#tools">Tools</a>
+      <a href="/#dictionaries">Dictionaries</a>
+      <a href="/#learn">Learn</a>
+      <a href="/#research">Research</a>
+      <a href="/#about">About</a>
+      <a href="/#quote" class="cta">Hire Us</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="crumb" lang="en"><a href="/">Home</a> › <a href="/#dictionaries">Dictionaries</a> › Yorùbá Monolingual Dictionary</div>
+    <div class="eyebrow" lang="en">Yorùbá Monolingual Dictionary</div>
+    <h1>Ìwé Atúmọ̀ Èdè Yorùbá</h1>
+    <p class="lead" lang="en">Yorùbá words defined in Yorùbá, with transcriptions and example sentences.</p>
+    <form class="search" id="search-form" role="search" autocomplete="off">
+      <input id="q" type="search" placeholder="Wá ọ̀rọ̀… (search for a word)" aria-label="Search for a Yorùbá word"
+             aria-autocomplete="list" aria-controls="suggest" aria-expanded="false" spellcheck="false">
+      <button class="go" type="submit" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+    </form>
+    <div class="tone-tip" lang="en">Tone marks and under-dots are optional: <b>oro</b> finds <b>ọ̀rọ̀</b>.</div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div id="result" aria-live="polite">
+      <div class="welcome" id="welcome">
+        <h2>Ẹ káàbọ̀</h2>
+        <p lang="en">Type a word above to see its meaning, transcription and an example sentence.</p>
+        <div class="chips" id="examples" lang="yo"></div>
+      </div>
+    </div>
+    <p class="rights" lang="en">© <span class="year"></span> Abíóyè Ọpẹ́yẹmí. All rights reserved. This dictionary may be consulted word by word; copying, scraping or downloading its content in bulk is not permitted.</p>
+  </div>
+</main>
+
+<footer lang="en">
+  <div class="wrap wide foot">
+    <div>© <span class="year"></span> Abíóyè Ọpẹ́yẹmí · Linguistics Hub</div>
+    <div><a href="mailto:abioye1718@gmail.com">abioye1718@gmail.com</a></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const API = "https://ayida-back-end.onrender.com/dict";
+  const EXAMPLES = ["ọmọ", "ilé", "omi", "orí", "ọ̀rẹ́"];
+  document.querySelectorAll(".year").forEach(e => { e.textContent = new Date().getFullYear(); });
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const input = $("q"), list = $("suggest"), result = $("result");
+  const welcomeHTML = result.innerHTML;
+
+  // The server sleeps when idle: wake it when the visitor starts using the search box
+  input.addEventListener("focus", () => { fetch(API + "/search?q=a").catch(() => {}); }, { once: true });
+
+  async function api(path) {
+    const res = await fetch(API + path);
+    if (res.status === 429) throw Object.assign(new Error("busy"), { code: 429 });
+    if (res.status === 404) throw Object.assign(new Error("missing"), { code: 404 });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return res.json();
+  }
+
+  // ---------- Suggestions ----------
+  let items = [], active = -1, timer = null, seq = 0;
+  function showSuggestions(words) {
+    items = words; active = -1;
+    list.innerHTML = words.map((w, i) => `<li role="option" id="opt-${i}" data-w="${esc(w)}">${esc(w)}</li>`).join("");
+    list.hidden = !words.length;
+    input.setAttribute("aria-expanded", String(!!words.length));
+  }
+  function highlight(i) {
+    active = i;
+    [...list.children].forEach((li, j) => li.classList.toggle("active", j === i));
+    input.setAttribute("aria-activedescendant", i >= 0 ? "opt-" + i : "");
+  }
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (!q) { showSuggestions([]); return; }
+    timer = setTimeout(async () => {
+      const mine = ++seq;
+      try {
+        const data = await api("/search?q=" + encodeURIComponent(q));
+        if (mine === seq && input.value.trim() === q) showSuggestions(data.results || []);
+      } catch (e) { if (mine === seq) showSuggestions([]); }
+    }, 250);
+  });
+  input.addEventListener("keydown", e => {
+    if (list.hidden) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); highlight(Math.min(items.length - 1, active + 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); highlight(Math.max(-1, active - 1)); }
+    else if (e.key === "Escape") showSuggestions([]);
+    else if (e.key === "Enter" && active >= 0) { e.preventDefault(); lookup(items[active]); }
+  });
+  list.addEventListener("mousedown", e => {
+    const li = e.target.closest("li");
+    if (li) { e.preventDefault(); lookup(li.dataset.w); }
+  });
+  input.addEventListener("blur", () => setTimeout(() => showSuggestions([]), 150));
+  $("search-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (q) lookup(q);
+  });
+
+  // ---------- Look-up ----------
+  function render(entries) {
+    const first = entries[0];
+    const same = k => entries.every(x => (x[k] || "") === (first[k] || ""));
+    const sharedPos = same("part_of_speech") ? first.part_of_speech : "";
+    const sharedIpa = same("transcription") ? first.transcription : "";
+    const senses = entries.map(x => `<li>` +
+      (!sharedPos && x.part_of_speech ? `<span class="sense-pos">${esc(x.part_of_speech)}</span>` : "") +
+      (!sharedIpa && x.transcription ? `<span class="ipa">/${esc(x.transcription)}/</span> ` : "") +
+      `<span class="def">${esc(x.definition)}</span>` +
+      (x.example ? `<p class="ex"><span class="label">Àpẹẹrẹ</span>${esc(x.example)}</p>` : "") + `</li>`).join("");
+    result.innerHTML = `<article class="entry"><h2>${esc(first.headword)}</h2>` +
+      `<div class="meta">${sharedIpa ? `<span class="ipa">/${esc(sharedIpa)}/</span>` : ""}${sharedPos ? `<span class="pos">${esc(sharedPos)}</span>` : ""}</div>` +
+      `<ol class="senses${entries.length === 1 ? " single" : ""}">${senses}</ol>` +
+      `<div class="actions" lang="en"><button class="tb" id="share" type="button">Copy link to this word</button></div></article>`;
+    $("share").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(location.href); $("share").textContent = "Link copied"; } catch { /* clipboard blocked */ }
+    });
+  }
+  function message(html, isErr) {
+    result.innerHTML = `<p class="status${isErr ? " err" : ""}">${html}</p>`;
+  }
+  async function lookup(w, push = true) {
+    clearTimeout(timer); seq++;          // drop any suggestions still on their way
+    showSuggestions([]);
+    input.value = w;
+    if (push) history.pushState({ w }, "", "?w=" + encodeURIComponent(w));
+    document.title = `${w} | Yorùbá Monolingual Dictionary`;
+    const slow = setTimeout(() => message(`<span lang="en">Waking up the dictionary server. The first search can take up to a minute…</span>`), 2500);
+    message(`<span lang="en">Looking up</span> <b>${esc(w)}</b>…`);
+    try {
+      const data = await api("/word?w=" + encodeURIComponent(w));
+      render(data.entries);
+    } catch (e) {
+      if (e.code === 404) message(`<b>${esc(w)}</b>: <span lang="en">this word is not in the dictionary yet. Check the spelling, or try it without tone marks.</span>`, true);
+      else if (e.code === 429) message(`<span lang="en">Too many look-ups in a short time. Please wait a minute and try again.</span>`, true);
+      else message(`<span lang="en">The dictionary could not be reached. Please check your connection and try again.</span>`, true);
+    } finally { clearTimeout(slow); }
+  }
+  window.addEventListener("popstate", () => {
+    const w = new URLSearchParams(location.search).get("w");
+    if (w) lookup(w, false); else { result.innerHTML = welcomeHTML; wireExamples(); input.value = ""; }
+  });
+  function wireExamples() {
+    const box = $("examples");
+    if (!box) return;
+    box.innerHTML = EXAMPLES.map(w => `<button class="chip" type="button">${esc(w)}</button>`).join("");
+    box.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => lookup(b.textContent)));
+  }
+  wireExamples();
+  const start = new URLSearchParams(location.search).get("w");
+  if (start) lookup(start, false);
+})();
+</script>
+</body>
+</html>
