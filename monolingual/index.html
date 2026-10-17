@@ -164,6 +164,8 @@
   .form-body input:focus, .form-body textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
   .recorder { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--cream); display: flex; flex-direction: column; gap: 10px; }
   .recorder[hidden] { display: none; }
+  .rec-opt { font-size: 0.85rem; font-weight: 600; color: var(--indigo); }
+  .rec-opt[hidden] { display: none; }
   .rec-row { display: flex; align-items: center; gap: 12px; }
   .rec-btn {
     display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 99px; border: none; cursor: pointer;
@@ -260,7 +262,8 @@
     </div>
     <div class="form-body">
       <label data-for="new_word meaning voice"><span id="hw-label">Word</span><input name="headword" maxlength="80" lang="yo" autocomplete="off"></label>
-      <div class="recorder" data-for="voice">
+      <div class="recorder" data-for="voice new_word meaning">
+        <span class="rec-opt" id="rec-opt">Pronunciation <small>optional</small></span>
         <div class="rec-row">
           <button class="rec-btn" type="button" id="rec-btn"><span class="dot"></span><span id="rec-label">Record</span></button>
           <span class="rec-time" id="rec-time"></span>
@@ -447,8 +450,11 @@
     play.hidden = true; play.removeAttribute("src");
     recBtn.classList.remove("recording"); recLabel.textContent = "Record"; recTime.textContent = "";
     recBtn.disabled = !canRecord;
-    hint.textContent = canRecord ? "Tap Record, say the word clearly once, then tap Stop."
-      : "This browser can't record audio. Leave your name and contact below and we'll reach you.";
+    hint.textContent = canRecord ? (kind === "voice" ? "Tap Record, say the word clearly once, then tap Stop."
+        : "If you like, tap Record and say the word once so others can hear how it's said.")
+      : kind === "voice" ? "This browser can't record audio. Leave your name and contact below and we'll reach you."
+      : "This browser can't record audio, but you can still send the word.";
+    $("rec-opt").hidden = kind === "voice";
   }
   async function startRecording() {
     try {
@@ -533,7 +539,7 @@
     }
     send.disabled = true; send.textContent = "Sending…";
     try {
-      if (kind === "voice" && recording) {
+      if (recording) {                             // optional for a new word or meaning
         data.audio_base64 = await toBase64(recording);
         data.audio_type = recording.type;
       }
