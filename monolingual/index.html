@@ -160,11 +160,27 @@
   }
   .form-body textarea { min-height: 80px; resize: vertical; }
   .form-body input:focus, .form-body textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .recorder { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--cream); display: flex; flex-direction: column; gap: 10px; }
+  .recorder[hidden] { display: none; }
+  .rec-row { display: flex; align-items: center; gap: 12px; }
+  .rec-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 99px; border: none; cursor: pointer;
+    background: var(--indigo); color: #fff; font: 600 0.95rem 'Noto Sans', sans-serif;
+  }
+  .rec-btn .dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5a4f; }
+  .rec-btn.recording { background: var(--clay); }
+  .rec-btn.recording .dot { border-radius: 2px; background: #fff; animation: pulse 1s infinite; }
+  .rec-btn:disabled { opacity: 0.5; cursor: default; }
+  @keyframes pulse { 50% { opacity: 0.35; } }
+  .rec-time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.9rem; }
+  .recorder audio { width: 100%; height: 40px; }
+  .rec-hint { margin: 0; font-size: 0.85rem; color: var(--muted); }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .form-msg { font-size: 0.9rem; min-height: 1.2em; }
   .form-msg.err { color: var(--clay); }
   .form-msg.ok { color: var(--green); }
   .tb.primary { background: var(--gold); border-color: var(--gold); }
+  .tb[hidden] { display: none; }
   .rights { margin-top: 28px; font-size: 0.82rem; color: var(--muted); text-align: center; }
 
   footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
@@ -216,10 +232,10 @@
     </div>
     <div class="contribute" lang="en">
       <h3>Help build the dictionary</h3>
-      <p>Know a word that's missing, or want to lend your voice to the recordings? Every suggestion is checked before it's added.</p>
+      <p>Know a word that's missing, or want to record how words are pronounced? Every suggestion is checked before it's added.</p>
       <div class="row">
         <button class="tb" type="button" data-contrib="new_word">+ Suggest a new word</button>
-        <button class="tb" type="button" data-contrib="voice">🎙 Volunteer to voice words</button>
+        <button class="tb" type="button" data-contrib="voice">🎙 Record words</button>
       </div>
     </div>
     <p class="rights" lang="en">© <span class="year"></span> Abíóyè Ọpẹ́yẹmí. All rights reserved. This dictionary may be consulted word by word; copying, scraping or downloading its content in bulk is not permitted.</p>
@@ -241,17 +257,26 @@
       <button class="form-close" type="button" aria-label="Close" data-close>×</button>
     </div>
     <div class="form-body">
-      <label data-for="new_word meaning">Word<input name="headword" maxlength="80" lang="yo" autocomplete="off"></label>
+      <label data-for="new_word meaning voice"><span id="hw-label">Word</span><input name="headword" maxlength="80" lang="yo" autocomplete="off"></label>
+      <div class="recorder" data-for="voice">
+        <div class="rec-row">
+          <button class="rec-btn" type="button" id="rec-btn"><span class="dot"></span><span id="rec-label">Record</span></button>
+          <span class="rec-time" id="rec-time"></span>
+        </div>
+        <audio id="rec-play" controls hidden></audio>
+        <p class="rec-hint" id="rec-hint">Tap Record, say the word clearly once, then tap Stop.</p>
+      </div>
       <label data-for="new_word meaning">Meaning (in Yorùbá)<textarea name="definition" maxlength="1000" lang="yo"></textarea></label>
       <label data-for="new_word meaning">Example sentence <small>optional</small><input name="example" maxlength="500" lang="yo"></label>
       <label data-for="new_word">Transcription <small>optional, e.g. IPA</small><input name="transcription" maxlength="120"></label>
       <label data-for="voice">Your dialect or hometown <small>optional</small><input name="dialect" maxlength="100" lang="yo"></label>
-      <label data-for="new_word meaning voice">Your name <small data-opt>optional</small><input name="name" maxlength="100" autocomplete="name"></label>
-      <label data-for="new_word meaning voice">Email or WhatsApp <small data-opt>optional, so we can thank or ask you</small><input name="contact" maxlength="150" autocomplete="email"></label>
+      <label data-for="new_word meaning voice">Your name <small>optional</small><input name="name" maxlength="100" autocomplete="name"></label>
+      <label data-for="new_word meaning voice">Email or WhatsApp <small>optional, so we can thank or ask you</small><input name="contact" maxlength="150" autocomplete="email"></label>
       <label data-for="new_word meaning voice">Anything else? <small>optional</small><textarea name="note" maxlength="1000"></textarea></label>
       <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
       <p class="form-msg" id="contrib-msg" role="status"></p>
-      <div class="row"><button class="tb primary" type="submit" id="contrib-send">Send</button></div>
+      <div class="row"><button class="tb primary" type="submit" id="contrib-send">Send</button>
+        <button class="tb" type="button" id="rec-another" hidden>🎙 Record another word</button></div>
     </div>
   </form>
 </dialog>
@@ -346,7 +371,7 @@
       `<ol class="senses${entries.length === 1 ? " single" : ""}">${senses}</ol>` +
       `<div class="actions" lang="en"><button class="tb" id="share" type="button">Copy link to this word</button>` +
       `<button class="tb" type="button" data-contrib="meaning" data-word="${esc(first.headword)}">Suggest another meaning</button>` +
-      `<button class="tb" type="button" data-contrib="voice" data-word="${esc(first.headword)}">🎙 Voice this word</button></div></article>`;
+      `<button class="tb" type="button" data-contrib="voice" data-word="${esc(first.headword)}">🎙 Record this word</button></div></article>`;
     if (audio) $("play").addEventListener("click", () => { new Audio(audio).play().catch(() => {}); });
     result.querySelectorAll("a[data-w]").forEach(a => a.addEventListener("click", () => lookup(a.dataset.w)));
     $("share").addEventListener("click", async () => {
@@ -391,52 +416,130 @@
   const TEXT = {
     new_word: ["Suggest a new word", "Give the word and its meaning. We'll review it before adding it."],
     meaning: ["Suggest another meaning", "Add a meaning that's missing. We'll review it before adding it."],
-    voice: ["Volunteer to voice words", "Native speakers can record words for the dictionary. Leave your details and we'll be in touch."],
+    voice: ["Record words for the dictionary", "Say the word clearly once. Recordings are checked before they're added."],
   };
   let kind = "new_word";
   const field = f => form.elements.namedItem(f);   // form.name would be the form's own name, so look fields up explicitly
+  const say = (text, cls) => { msg.textContent = text; msg.className = "form-msg" + (cls ? " " + cls : ""); };
+
+  // ----- Recorder: the browser records from the microphone (MediaRecorder) -----
+  const recBtn = $("rec-btn"), recLabel = $("rec-label"), recTime = $("rec-time"), play = $("rec-play"), hint = $("rec-hint");
+  const MAX_SECONDS = 15;
+  const MIME = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"]
+    .find(m => window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) || "";
+  const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  let rec = null, stream = null, chunks = [], recording = null, ticker = null;
+  function resetRecorder() {
+    if (rec && rec.state === "recording") { rec.onstop = null; rec.stop(); }
+    if (stream) stream.getTracks().forEach(t => t.stop());
+    clearInterval(ticker);
+    rec = stream = recording = null; chunks = [];
+    play.hidden = true; play.removeAttribute("src");
+    recBtn.classList.remove("recording"); recLabel.textContent = "Record"; recTime.textContent = "";
+    recBtn.disabled = !canRecord;
+    hint.textContent = canRecord ? "Tap Record, say the word clearly once, then tap Stop."
+      : "This browser can't record audio. Leave your name and contact below and we'll reach you.";
+  }
+  async function startRecording() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      hint.textContent = "Microphone access was blocked. Allow the microphone for this site and try again.";
+      return;
+    }
+    chunks = [];
+    rec = new MediaRecorder(stream, MIME ? { mimeType: MIME } : undefined);
+    rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+    rec.onstop = () => {
+      clearInterval(ticker);
+      recording = new Blob(chunks, { type: (rec.mimeType || MIME || "audio/webm") });
+      play.src = URL.createObjectURL(recording); play.hidden = false;
+      stream.getTracks().forEach(t => t.stop());
+      recBtn.classList.remove("recording"); recLabel.textContent = "Record again";
+      hint.textContent = "Listen back. If it sounds clear, press Send.";
+      say("");
+    };
+    rec.start();
+    const t0 = Date.now();
+    recBtn.classList.add("recording"); recLabel.textContent = "Stop";
+    hint.textContent = "Recording… say the word now.";
+    ticker = setInterval(() => {
+      const sec = (Date.now() - t0) / 1000;
+      recTime.textContent = `0:${String(Math.floor(sec)).padStart(2, "0")} / 0:${MAX_SECONDS}`;
+      if (sec >= MAX_SECONDS && rec.state === "recording") rec.stop();   // stops itself after 15 seconds
+    }, 200);
+  }
+  recBtn.addEventListener("click", () => {
+    if (rec && rec.state === "recording") rec.stop();
+    else { if (recording) { play.hidden = true; recording = null; } startRecording(); }
+  });
+  const toBase64 = blob => new Promise((ok, fail) => {
+    const r = new FileReader();
+    r.onload = () => ok(String(r.result).split(",")[1]);
+    r.onerror = fail;
+    r.readAsDataURL(blob);
+  });
+
   function openForm(k, word) {
     kind = k;
-    form.reset();
-    msg.textContent = ""; msg.className = "form-msg";
-    send.disabled = false; send.textContent = "Send";
+    form.reset(); resetRecorder();
+    say("");
+    send.disabled = false; send.textContent = "Send"; $("rec-another").hidden = true;
     $("contrib-title").textContent = TEXT[k][0] + (word && k !== "new_word" ? `: ${word}` : "");
+    if (k === "voice" && word) $("contrib-title").textContent = `Record: ${word}`;
     $("contrib-sub").textContent = TEXT[k][1];
-    form.querySelectorAll("label[data-for]").forEach(l => { l.hidden = !l.dataset.for.split(" ").includes(k); });
-    form.querySelectorAll("small[data-opt]").forEach(sm => { sm.hidden = k === "voice"; });   // name and contact are required to volunteer
+    $("hw-label").textContent = k === "voice" ? "Word you're recording" : "Word";
+    form.querySelectorAll("[data-for]").forEach(el => { el.hidden = !el.dataset.for.split(" ").includes(k); });
     if (word) field("headword").value = word;
-    if (k === "voice" && word) field("note").value = `I can record: ${word}`;
     dlg.showModal();
-    const first = form.querySelector("label:not([hidden]) input, label:not([hidden]) textarea");
-    if (first && !first.value) first.focus(); else if (field("definition") && k !== "voice") field("definition").focus();
+    if (k === "voice") (word ? recBtn : field("headword")).focus();
+    else (word ? field("definition") : field("headword")).focus();
   }
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-contrib]");
     if (b) openForm(b.dataset.contrib, b.dataset.word || "");
     if (e.target.closest("[data-close]") || e.target === dlg) dlg.close();
   });
+  dlg.addEventListener("close", resetRecorder);   // always release the microphone
+  $("rec-another").addEventListener("click", () => {
+    resetRecorder(); field("headword").value = ""; say("");
+    $("contrib-title").textContent = TEXT.voice[0];
+    send.disabled = false; send.textContent = "Send"; $("rec-another").hidden = true;
+    field("headword").focus();
+  });
   form.addEventListener("submit", async e => {
     e.preventDefault();
+    if (rec && rec.state === "recording") { say("Tap Stop to finish recording first.", "err"); return; }
     const data = { kind };
-    ["headword", "definition", "example", "transcription", "name", "contact", "dialect", "note", "website"].forEach(f => {
-      const v = field(f).closest("label")?.hidden ? "" : field(f).value.trim();
+    ["headword", "definition", "example", "transcription", "name", "contact", "dialect", "note"].forEach(f => {
+      const v = field(f).closest("[data-for]")?.hidden ? "" : field(f).value.trim();
       if (v) data[f] = v;
     });
     if (field("website").value) data.website = field("website").value;
-    if (kind !== "voice" && (!data.headword || !data.definition)) { msg.textContent = "Please give the word and its meaning."; msg.className = "form-msg err"; return; }
-    if (kind === "voice" && (!data.name || !data.contact)) { msg.textContent = "Please give your name and an email or WhatsApp number."; msg.className = "form-msg err"; return; }
+    if (kind !== "voice" && (!data.headword || !data.definition)) { say("Please give the word and its meaning.", "err"); return; }
+    if (kind === "voice") {
+      if (recording && !data.headword) { say("Please type the word you recorded.", "err"); return; }
+      if (!recording && !(data.name && data.contact)) { say("Record the word, or leave your name and contact so we can reach you.", "err"); return; }
+    }
     send.disabled = true; send.textContent = "Sending…";
     try {
+      if (kind === "voice" && recording) {
+        data.audio_base64 = await toBase64(recording);
+        data.audio_type = recording.type;
+      }
       const res = await fetch(API + "/suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
       if (res.status === 429) throw new Error("You've sent several suggestions recently. Please try again later.");
       if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(typeof j.detail === "string" ? j.detail : "Something went wrong. Please try again."); }
-      msg.textContent = kind === "voice" ? "Thank you! We'll contact you about recording." : "Thank you! Your suggestion will be reviewed.";
-      msg.className = "form-msg ok";
       send.textContent = "Sent";
-      setTimeout(() => dlg.open && dlg.close(), 2200);
+      if (kind === "voice" && recording) {
+        say(`Thank you! Your recording of “${data.headword}” will be reviewed.`, "ok");
+        $("rec-another").hidden = false;           // keep the form open so they can record more words
+      } else {
+        say(kind === "voice" ? "Thank you! We'll contact you about recording." : "Thank you! Your suggestion will be reviewed.", "ok");
+        setTimeout(() => dlg.open && dlg.close(), 2200);
+      }
     } catch (err) {
-      msg.textContent = err.message.startsWith("Failed to fetch") ? "Couldn't reach the dictionary server. Please try again." : err.message;
-      msg.className = "form-msg err";
+      say(err.message.startsWith("Failed to fetch") ? "Couldn't reach the dictionary server. Please try again." : err.message, "err");
       send.disabled = false; send.textContent = "Send";
     }
   });
