@@ -136,6 +136,35 @@
   .rel { margin: 8px 0 0; font-size: 0.95rem; }
   .rel b { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; }
   .rel a { color: var(--indigo); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; cursor: pointer; }
+  /* Contribution form */
+  .contribute { margin-top: 18px; background: var(--paper); border: 1px dashed var(--gold); border-radius: var(--radius); padding: 16px 20px; }
+  .contribute h3 { font-family: 'Noto Serif', Georgia, serif; font-size: 1.1rem; color: var(--indigo); margin: 0 0 4px; }
+  .contribute p { margin: 0 0 10px; color: var(--muted); font-size: 0.92rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  dialog.form {
+    border: none; border-radius: var(--radius); padding: 0; width: min(480px, calc(100% - 24px));
+    box-shadow: 0 20px 60px rgba(31,42,90,0.3); color: var(--ink);
+  }
+  dialog.form::backdrop { background: rgba(31,42,90,0.55); }
+  .form-head { background: var(--indigo); color: #fff; padding: 18px 22px; position: relative; }
+  .form-head h3 { margin: 0; font-family: 'Noto Serif', Georgia, serif; font-size: 1.25rem; padding-right: 30px; }
+  .form-head p { margin: 4px 0 0; color: #c9cfe8; font-size: 0.9rem; }
+  .form-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 8px; border: none;
+    background: rgba(255,255,255,0.12); color: #fff; font-size: 1.2rem; cursor: pointer; }
+  .form-body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .form-body label { font-size: 0.85rem; font-weight: 600; color: var(--indigo); display: flex; flex-direction: column; gap: 4px; }
+  .form-body label small { font-weight: 400; color: var(--muted); }
+  .form-body label[hidden], .form-body small[hidden] { display: none; }   /* our display:flex would otherwise override "hidden" */
+  .form-body input, .form-body textarea {
+    font: 1rem 'Noto Sans', sans-serif; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--cream); color: var(--ink);
+  }
+  .form-body textarea { min-height: 80px; resize: vertical; }
+  .form-body input:focus, .form-body textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form-msg { font-size: 0.9rem; min-height: 1.2em; }
+  .form-msg.err { color: var(--clay); }
+  .form-msg.ok { color: var(--green); }
+  .tb.primary { background: var(--gold); border-color: var(--gold); }
   .rights { margin-top: 28px; font-size: 0.82rem; color: var(--muted); text-align: center; }
 
   footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
@@ -185,6 +214,14 @@
         <div class="chips" id="examples" lang="yo"></div>
       </div>
     </div>
+    <div class="contribute" lang="en">
+      <h3>Help build the dictionary</h3>
+      <p>Know a word that's missing, or want to lend your voice to the recordings? Every suggestion is checked before it's added.</p>
+      <div class="row">
+        <button class="tb" type="button" data-contrib="new_word">+ Suggest a new word</button>
+        <button class="tb" type="button" data-contrib="voice">🎙 Volunteer to voice words</button>
+      </div>
+    </div>
     <p class="rights" lang="en">© <span class="year"></span> Abíóyè Ọpẹ́yẹmí. All rights reserved. This dictionary may be consulted word by word; copying, scraping or downloading its content in bulk is not permitted.</p>
   </div>
 </main>
@@ -195,6 +232,29 @@
     <div><a href="mailto:abioye1718@gmail.com">abioye1718@gmail.com</a></div>
   </div>
 </footer>
+
+<dialog class="form" id="contrib-dialog" lang="en">
+  <form id="contrib-form" method="dialog" novalidate>
+    <div class="form-head">
+      <h3 id="contrib-title">Suggest a new word</h3>
+      <p id="contrib-sub">We'll review it before adding it to the dictionary.</p>
+      <button class="form-close" type="button" aria-label="Close" data-close>×</button>
+    </div>
+    <div class="form-body">
+      <label data-for="new_word meaning">Word<input name="headword" maxlength="80" lang="yo" autocomplete="off"></label>
+      <label data-for="new_word meaning">Meaning (in Yorùbá)<textarea name="definition" maxlength="1000" lang="yo"></textarea></label>
+      <label data-for="new_word meaning">Example sentence <small>optional</small><input name="example" maxlength="500" lang="yo"></label>
+      <label data-for="new_word">Transcription <small>optional, e.g. IPA</small><input name="transcription" maxlength="120"></label>
+      <label data-for="voice">Your dialect or hometown <small>optional</small><input name="dialect" maxlength="100" lang="yo"></label>
+      <label data-for="new_word meaning voice">Your name <small data-opt>optional</small><input name="name" maxlength="100" autocomplete="name"></label>
+      <label data-for="new_word meaning voice">Email or WhatsApp <small data-opt>optional, so we can thank or ask you</small><input name="contact" maxlength="150" autocomplete="email"></label>
+      <label data-for="new_word meaning voice">Anything else? <small>optional</small><textarea name="note" maxlength="1000"></textarea></label>
+      <div class="hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
+      <p class="form-msg" id="contrib-msg" role="status"></p>
+      <div class="row"><button class="tb primary" type="submit" id="contrib-send">Send</button></div>
+    </div>
+  </form>
+</dialog>
 
 <script>
 (() => {
@@ -284,7 +344,9 @@
       `<div class="meta">${audio ? `<button class="play" id="play" type="button" aria-label="Play pronunciation"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>` : ""}` +
       `${sharedIpa ? `<span class="ipa">/${esc(sharedIpa)}/</span>` : ""}${sharedPos ? `<span class="pos">${esc(sharedPos)}</span>` : ""}</div>` +
       `<ol class="senses${entries.length === 1 ? " single" : ""}">${senses}</ol>` +
-      `<div class="actions" lang="en"><button class="tb" id="share" type="button">Copy link to this word</button></div></article>`;
+      `<div class="actions" lang="en"><button class="tb" id="share" type="button">Copy link to this word</button>` +
+      `<button class="tb" type="button" data-contrib="meaning" data-word="${esc(first.headword)}">Suggest another meaning</button>` +
+      `<button class="tb" type="button" data-contrib="voice" data-word="${esc(first.headword)}">🎙 Voice this word</button></div></article>`;
     if (audio) $("play").addEventListener("click", () => { new Audio(audio).play().catch(() => {}); });
     result.querySelectorAll("a[data-w]").forEach(a => a.addEventListener("click", () => lookup(a.dataset.w)));
     $("share").addEventListener("click", async () => {
@@ -306,7 +368,8 @@
       const data = await api("/word?w=" + encodeURIComponent(w));
       render(data.entries);
     } catch (e) {
-      if (e.code === 404) message(`<b>${esc(w)}</b>: <span lang="en">this word is not in the dictionary yet. Check the spelling, or try it without tone marks.</span>`, true);
+      if (e.code === 404) message(`<b>${esc(w)}</b>: <span lang="en">this word is not in the dictionary yet. Check the spelling, or try it without tone marks.</span>` +
+        `<br><button class="tb" type="button" data-contrib="new_word" data-word="${esc(w)}" style="margin-top:10px">+ Suggest “${esc(w)}” as a new word</button>`, true);
       else if (e.code === 429) message(`<span lang="en">Too many look-ups in a short time. Please wait a minute and try again.</span>`, true);
       else message(`<span lang="en">The dictionary could not be reached. Please check your connection and try again.</span>`, true);
     } finally { clearTimeout(slow); }
@@ -322,6 +385,61 @@
     box.querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => lookup(b.textContent)));
   }
   wireExamples();
+
+  // ---------- Contributions ----------
+  const dlg = $("contrib-dialog"), form = $("contrib-form"), msg = $("contrib-msg"), send = $("contrib-send");
+  const TEXT = {
+    new_word: ["Suggest a new word", "Give the word and its meaning. We'll review it before adding it."],
+    meaning: ["Suggest another meaning", "Add a meaning that's missing. We'll review it before adding it."],
+    voice: ["Volunteer to voice words", "Native speakers can record words for the dictionary. Leave your details and we'll be in touch."],
+  };
+  let kind = "new_word";
+  const field = f => form.elements.namedItem(f);   // form.name would be the form's own name, so look fields up explicitly
+  function openForm(k, word) {
+    kind = k;
+    form.reset();
+    msg.textContent = ""; msg.className = "form-msg";
+    send.disabled = false; send.textContent = "Send";
+    $("contrib-title").textContent = TEXT[k][0] + (word && k !== "new_word" ? `: ${word}` : "");
+    $("contrib-sub").textContent = TEXT[k][1];
+    form.querySelectorAll("label[data-for]").forEach(l => { l.hidden = !l.dataset.for.split(" ").includes(k); });
+    form.querySelectorAll("small[data-opt]").forEach(sm => { sm.hidden = k === "voice"; });   // name and contact are required to volunteer
+    if (word) field("headword").value = word;
+    if (k === "voice" && word) field("note").value = `I can record: ${word}`;
+    dlg.showModal();
+    const first = form.querySelector("label:not([hidden]) input, label:not([hidden]) textarea");
+    if (first && !first.value) first.focus(); else if (field("definition") && k !== "voice") field("definition").focus();
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-contrib]");
+    if (b) openForm(b.dataset.contrib, b.dataset.word || "");
+    if (e.target.closest("[data-close]") || e.target === dlg) dlg.close();
+  });
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = { kind };
+    ["headword", "definition", "example", "transcription", "name", "contact", "dialect", "note", "website"].forEach(f => {
+      const v = field(f).closest("label")?.hidden ? "" : field(f).value.trim();
+      if (v) data[f] = v;
+    });
+    if (field("website").value) data.website = field("website").value;
+    if (kind !== "voice" && (!data.headword || !data.definition)) { msg.textContent = "Please give the word and its meaning."; msg.className = "form-msg err"; return; }
+    if (kind === "voice" && (!data.name || !data.contact)) { msg.textContent = "Please give your name and an email or WhatsApp number."; msg.className = "form-msg err"; return; }
+    send.disabled = true; send.textContent = "Sending…";
+    try {
+      const res = await fetch(API + "/suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      if (res.status === 429) throw new Error("You've sent several suggestions recently. Please try again later.");
+      if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(typeof j.detail === "string" ? j.detail : "Something went wrong. Please try again."); }
+      msg.textContent = kind === "voice" ? "Thank you! We'll contact you about recording." : "Thank you! Your suggestion will be reviewed.";
+      msg.className = "form-msg ok";
+      send.textContent = "Sent";
+      setTimeout(() => dlg.open && dlg.close(), 2200);
+    } catch (err) {
+      msg.textContent = err.message.startsWith("Failed to fetch") ? "Couldn't reach the dictionary server. Please try again." : err.message;
+      msg.className = "form-msg err";
+      send.disabled = false; send.textContent = "Send";
+    }
+  });
   const start = new URLSearchParams(location.search).get("w");
   if (start) lookup(start, false);
 })();
