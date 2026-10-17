@@ -126,6 +126,16 @@
   .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .chip { padding: 6px 14px; border-radius: 99px; border: 1px solid var(--line); background: var(--cream); cursor: pointer; font: 1rem 'Noto Sans', sans-serif; color: var(--indigo); }
   .chip:hover { border-color: var(--gold); }
+  .play {
+    width: 36px; height: 36px; border-radius: 50%; border: none; background: var(--gold); color: var(--indigo);
+    cursor: pointer; display: inline-grid; place-items: center; vertical-align: middle;
+  }
+  .play:hover { background: #e8ab3a; }
+  .play svg { width: 16px; height: 16px; fill: currentColor; }
+  .usage { display: inline-block; font-size: 0.78rem; font-weight: 600; padding: 2px 9px; border-radius: 99px; background: rgba(31,42,90,0.08); color: var(--indigo); margin-right: 6px; }
+  .rel { margin: 8px 0 0; font-size: 0.95rem; }
+  .rel b { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px; }
+  .rel a { color: var(--indigo); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; cursor: pointer; }
   .rights { margin-top: 28px; font-size: 0.82rem; color: var(--muted); text-align: center; }
 
   footer { background: var(--indigo); color: #c9cfe8; padding: 28px 0; font-size: 0.88rem; }
@@ -257,15 +267,26 @@
     const same = k => entries.every(x => (x[k] || "") === (first[k] || ""));
     const sharedPos = same("part_of_speech") ? first.part_of_speech : "";
     const sharedIpa = same("transcription") ? first.transcription : "";
+    // Lists such as synonyms are written "a, b; c" in the spreadsheet; each word becomes a link
+    const words = v => String(v).split(/[,;]/).map(t => t.trim()).filter(Boolean)
+      .map(t => `<a data-w="${esc(t)}">${esc(t)}</a>`).join(", ");
+    const rel = (label, v) => v ? `<p class="rel"><b>${label}</b>${words(v)}</p>` : "";
+    const audio = (entries.find(x => x.audio) || {}).audio;
     const senses = entries.map(x => `<li>` +
+      (x.usage_label ? `<span class="usage">${esc(x.usage_label)}</span>` : "") +
       (!sharedPos && x.part_of_speech ? `<span class="sense-pos">${esc(x.part_of_speech)}</span>` : "") +
       (!sharedIpa && x.transcription ? `<span class="ipa">/${esc(x.transcription)}/</span> ` : "") +
       `<span class="def">${esc(x.definition)}</span>` +
-      (x.example ? `<p class="ex"><span class="label">Àpẹẹrẹ</span>${esc(x.example)}</p>` : "") + `</li>`).join("");
+      (x.example ? `<p class="ex"><span class="label">Àpẹẹrẹ</span>${esc(x.example)}</p>` : "") +
+      rel("Synonyms", x.synonyms) + rel("Antonyms", x.antonyms) + rel("Variants", x.variants) + rel("Related words", x.related_words) +
+      (x.origin ? `<p class="rel"><b>Origin</b>${esc(x.origin)}</p>` : "") + `</li>`).join("");
     result.innerHTML = `<article class="entry"><h2>${esc(first.headword)}</h2>` +
-      `<div class="meta">${sharedIpa ? `<span class="ipa">/${esc(sharedIpa)}/</span>` : ""}${sharedPos ? `<span class="pos">${esc(sharedPos)}</span>` : ""}</div>` +
+      `<div class="meta">${audio ? `<button class="play" id="play" type="button" aria-label="Play pronunciation"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>` : ""}` +
+      `${sharedIpa ? `<span class="ipa">/${esc(sharedIpa)}/</span>` : ""}${sharedPos ? `<span class="pos">${esc(sharedPos)}</span>` : ""}</div>` +
       `<ol class="senses${entries.length === 1 ? " single" : ""}">${senses}</ol>` +
       `<div class="actions" lang="en"><button class="tb" id="share" type="button">Copy link to this word</button></div></article>`;
+    if (audio) $("play").addEventListener("click", () => { new Audio(audio).play().catch(() => {}); });
+    result.querySelectorAll("a[data-w]").forEach(a => a.addEventListener("click", () => lookup(a.dataset.w)));
     $("share").addEventListener("click", async () => {
       try { await navigator.clipboard.writeText(location.href); $("share").textContent = "Link copied"; } catch { /* clipboard blocked */ }
     });
