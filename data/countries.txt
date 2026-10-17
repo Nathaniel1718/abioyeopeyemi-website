@@ -1,0 +1,209 @@
+# Language situation of the world's 195 countries (193 UN members + 2 observer states).
+# One country per line:  ISO code | Name | Region | Official language(s) | Other widely used languages | Approx. living languages | Summary
+# Counts of living languages are rounded estimates; sources (e.g. Ethnologue, Glottolog) differ.
+# Edit this file, then run:  python3 scripts/build_languages.py
+
+# ---------- Africa ----------
+DZ|Algeria|Africa|Arabic, Tamazight (Berber)|Algerian Arabic (Darja), Kabyle, French|~18|Algerian Arabic is the everyday language; Tamazight became official in 2016 and French remains strong in business and higher education.
+AO|Angola|Africa|Portuguese|Umbundu, Kimbundu, Kikongo, Chokwe|~45|Portuguese is spreading fast as a first language in cities, while Bantu languages such as Umbundu and Kimbundu dominate their regions.
+BJ|Benin|Africa|French|Fon, Yoruba, Bariba, Dendi, Adja|~55|French is the language of government and schooling; Fon is the most widely spoken language in the south and Yoruba in the south-east.
+BW|Botswana|Africa|English|Setswana (national language), Kalanga, Sekgalagadi|~30|Setswana is spoken by most of the population and serves as the national language, with English used in government and education.
+BF|Burkina Faso|Africa|Mooré, Dioula, Fulfulde and other national languages (2023 constitution)|French (working language), Gourmanché, Bissa|~70|A 2023 constitutional change made national languages official and reduced French to a working language; Mooré is the largest language and Dioula a trade lingua franca.
+BI|Burundi|Africa|Kirundi, French, English|Swahili|~3|One of Africa's few near-monolingual countries: almost everyone speaks Kirundi, with French, English and Swahili in administration and trade.
+CV|Cabo Verde|Africa|Portuguese|Cape Verdean Creole (Kabuverdianu)|~2|Cape Verdean Creole is the mother tongue of nearly everyone, while Portuguese is used in formal domains.
+CM|Cameroon|Africa|French, English|Cameroonian Pidgin English, Fulfulde, Ewondo, Duala, Camfranglais|~270|One of the most linguistically diverse countries in Africa, officially bilingual in French and English, with Pidgin and Fulfulde as major lingua francas.
+CF|Central African Republic|Africa|French, Sango|Gbaya, Banda|~70|Sango is a national lingua franca spoken by almost the whole population, unusual for the region.
+TD|Chad|Africa|French, Arabic|Chadian Arabic, Sara, Kanembu|~125|Chadian Arabic is the main lingua franca; over a hundred languages are spoken across the country.
+KM|Comoros|Africa|Comorian (Shikomori), Arabic, French|—|~4|Comorian, a Bantu language close to Swahili, is spoken by nearly everyone, alongside Arabic and French.
+CG|Republic of the Congo|Africa|French|Lingala, Kituba (Munukutuba)|~60|Lingala and Kituba are national languages and lingua francas, Lingala in the north and Brazzaville, Kituba in the south.
+CD|DR Congo|Africa|French|Lingala, Swahili, Kikongo ya leta, Tshiluba (national languages)|~210|French is official, while four national languages each serve as lingua francas in different regions among more than 200 languages.
+CI|Côte d'Ivoire|Africa|French|Dioula (Jula), Baoulé, Bété, Senufo|~75|French is widely spoken as a first language in Abidjan, with Dioula the main trade language and Nouchi an urban slang.
+DJ|Djibouti|Africa|French, Arabic|Somali, Afar|~5|Somali and Afar are the main everyday languages, while French and Arabic are official.
+EG|Egypt|Africa|Arabic|Egyptian Arabic, Sa'idi Arabic, Nubian languages, Beja|~10|Egyptian Arabic is the everyday language and is widely understood across the Arab world through film and media; Modern Standard Arabic is used in writing.
+GQ|Equatorial Guinea|Africa|Spanish, French, Portuguese|Fang, Bube, Annobonese|~12|The only Spanish-official country in Africa; Fang is the largest first language.
+ER|Eritrea|Africa|No official language (working languages: Tigrinya, Arabic, English)|Tigre, Afar, Saho, Bilen, Kunama, Nara, Beja|~10|The state recognises the languages of its nine ethnic groups equally, with Tigrinya the most widely spoken.
+SZ|Eswatini|Africa|siSwati, English|—|~3|siSwati is spoken by almost the entire population; English is used in government and education.
+ET|Ethiopia|Africa|Amharic, Afaan Oromo, Tigrinya, Somali, Afar (federal working languages)|Sidama, Wolaytta, Gurage languages|~90|Amharic was long the sole federal language; since 2020 Afaan Oromo (the largest first language), Tigrinya, Somali and Afar were added, and regions choose their own languages.
+GA|Gabon|Africa|French|Fang, Punu, Nzebi, Myene|~40|French is unusually widespread as a home language, especially in Libreville; Fang is the largest African language.
+GM|The Gambia|Africa|English|Mandinka, Wolof, Fula, Serer, Jola|~10|Wolof and Mandinka are the main lingua francas; English is used in government and schools.
+GH|Ghana|Africa|English|Akan (Twi, Fante), Ewe, Dagbani, Ga, Dagaare, Hausa|~80|Akan is the most widely spoken language; eleven Ghanaian languages are government-sponsored for education and media.
+GN|Guinea|Africa|French|Pular, Maninka, Susu, Kissi, Kpelle|~40|Pular, Maninka and Susu are the three big regional languages; Susu dominates the capital, Conakry.
+GW|Guinea-Bissau|Africa|Portuguese|Guinea-Bissau Creole (Kriol), Balanta, Fula, Mandinka|~20|Kriol is the national lingua franca spoken by most people, while few speak Portuguese as a first language.
+KE|Kenya|Africa|English, Swahili|Kikuyu, Luhya, Luo, Kalenjin, Kamba, Sheng|~68|Swahili is the national language and English dominates education and business; Sheng, a Swahili-English mix, is popular among urban youth.
+LS|Lesotho|Africa|Sesotho, English|isiXhosa, isiZulu|~5|Sesotho is the first language of almost the whole population.
+LR|Liberia|Africa|English|Liberian Kreyol (Kolokwa), Kpelle, Bassa, Grebo, Vai|~30|Liberian English varieties are the main lingua franca; the Vai language has its own indigenous script.
+LY|Libya|Africa|Arabic|Libyan Arabic, Tamazight (Berber), Tuareg (Tamasheq), Teda|~10|Libyan Arabic is the common language; Amazigh languages are spoken in the Nafusa Mountains, Zuwara and the south.
+MG|Madagascar|Africa|Malagasy, French|Malagasy dialects|~15|Malagasy, an Austronesian language related to languages of Borneo, unites the island; French is used in education and administration.
+MW|Malawi|Africa|English|Chichewa (national language), Chiyao, Chitumbuka, Chilomwe|~16|Chichewa is the national language and widely spoken; English is the language of government and higher education.
+ML|Mali|Africa|13 national languages incl. Bambara (official since 2023)|French (working language), Fulfulde, Songhay, Soninke, Tamasheq|~65|The 2023 constitution made national languages official and kept French as a working language; Bambara is spoken by most Malians.
+MR|Mauritania|Africa|Arabic|Hassaniya Arabic, Pulaar, Soninke, Wolof, French|~8|Hassaniya Arabic is the dominant everyday language; Pulaar, Soninke and Wolof are national languages and French remains important.
+MU|Mauritius|Africa|No de jure official language (English and French used officially)|Mauritian Creole, Bhojpuri, Hindi, Tamil, Urdu|~12|Mauritian Creole is the mother tongue of most people, English is the language of government and French of the media.
+MA|Morocco|Africa|Arabic, Amazigh (Tamazight)|Moroccan Arabic (Darija), Tachelhit, Tarifit, Central Atlas Tamazight, French, Spanish|~10|Darija is the everyday language; Amazigh became official in 2011, and French dominates business and science.
+MZ|Mozambique|Africa|Portuguese|Emakhuwa, Xichangana, Cisena, Elomwe, Echuwabo|~45|Portuguese is official and growing as a first language; Emakhuwa is the largest national language.
+NA|Namibia|Africa|English|Oshiwambo, Khoekhoegowab, Afrikaans, Otjiherero, RuKwangali, German|~30|English is official though spoken natively by few; Oshiwambo is the largest home language and Afrikaans a common lingua franca.
+NE|Niger|Africa|Hausa (national language, 2025 charter); French and English (working languages)|Zarma-Songhay, Fulfulde, Tamasheq, Kanuri|~20|Hausa is the dominant lingua franca, spoken by over half the population; a 2025 transitional charter changed the status of French.
+NG|Nigeria|Africa|English|Hausa, Yoruba, Igbo, Nigerian Pidgin, Fulfulde, Kanuri, Ibibio, Tiv|~520|Africa's most linguistically diverse country, with over 500 languages; Hausa, Yoruba and Igbo are the major regional languages and Nigerian Pidgin is a nationwide lingua franca.
+RW|Rwanda|Africa|Kinyarwanda, English, French, Swahili|—|~3|Kinyarwanda is spoken by virtually everyone; English replaced French as the main language of education in 2008.
+ST|São Tomé and Príncipe|Africa|Portuguese|Forro, Angolar, Principense (creoles)|~4|Portuguese is now the first language of most people, while the local Portuguese-based creoles are declining.
+SN|Senegal|Africa|French|Wolof, Pulaar, Serer, Jola, Mandinka, Soninke|~40|Wolof is the dominant lingua franca, spoken by most Senegalese; several national languages are used in literacy programmes.
+SC|Seychelles|Africa|Seychellois Creole, English, French|—|~3|Seychellois Creole (Kreol) is the first language of almost everyone.
+SL|Sierra Leone|Africa|English|Krio, Mende, Temne, Limba|~20|Krio, an English-based creole, is the lingua franca understood by nearly all Sierra Leoneans.
+SO|Somalia|Africa|Somali, Arabic|Maay, English, Italian|~13|Somali is spoken by the great majority, making Somalia unusually monolingual for the region; Maay is spoken in the south.
+ZA|South Africa|Africa|12 official: Afrikaans, English, isiNdebele, isiXhosa, isiZulu, Sepedi, Sesotho, Setswana, siSwati, Tshivenda, Xitsonga, South African Sign Language|Fanagalo, Khoe and San languages|~30|isiZulu is the largest home language, English dominates public life, and South African Sign Language became the twelfth official language in 2023.
+SS|South Sudan|Africa|English|Juba Arabic, Dinka, Nuer, Bari, Zande|~65|Juba Arabic is the main lingua franca; English became the official language at independence in 2011.
+SD|Sudan|Africa|Arabic, English|Sudanese Arabic, Beja, Fur, Nubian languages, Hausa|~70|Sudanese Arabic is the national lingua franca among many languages, especially in Darfur and the Nuba Mountains.
+TZ|Tanzania|Africa|Swahili, English|Sukuma, Chaga, Haya, Nyamwezi, Makonde|~120|Swahili is the national language spoken by almost all Tanzanians and the medium of primary education, a deliberate post-independence policy.
+TG|Togo|Africa|French|Ewe, Kabiyè (national languages), Gen, Tem|~40|Ewe dominates the south and Kabiyè the north; both have national-language status.
+TN|Tunisia|Africa|Arabic|Tunisian Arabic (Derja), French, Tamazight|~5|Tunisian Arabic is the everyday language and French remains widely used in business and higher education.
+UG|Uganda|Africa|English, Swahili|Luganda, Runyankole, Lusoga, Acholi, Lugbara|~40|Luganda is the most widely spoken African language; Swahili became a second official language in 2005.
+ZM|Zambia|Africa|English|Bemba, Nyanja, Tonga, Lozi, Kaonde, Lunda, Luvale|~45|English is official, and seven regional languages are used in education and broadcasting; Bemba and Nyanja are the main lingua francas.
+ZW|Zimbabwe|Africa|16 official, incl. Shona, Ndebele, English, Chewa, Kalanga, Nambya, Ndau, Tonga, Venda, Sign Language|—|~20|Zimbabwe's 2013 constitution lists 16 official languages; Shona is spoken by the majority and Ndebele mainly in the south-west.
+
+# ---------- Americas ----------
+AG|Antigua and Barbuda|Americas|English|Antiguan and Barbudan Creole|~2|English is official while an English-based creole is the everyday spoken language.
+AR|Argentina|Americas|Spanish (de facto)|Guaraní, Quechua, Mapudungun, Wichí, Italian|~25|Rioplatense Spanish dominates; Guaraní is co-official in Corrientes Province, and Italian strongly influenced Buenos Aires speech.
+BS|The Bahamas|Americas|English|Bahamian Creole|~2|English is official and Bahamian Creole is widely spoken informally.
+BB|Barbados|Americas|English|Bajan Creole|~2|Bajan, an English-based creole, is the everyday language of most Barbadians.
+BZ|Belize|Americas|English|Belizean Kriol, Spanish, Garifuna, Q'eqchi', Mopan Maya, Plautdietsch|~10|The only English-official country in Central America; Kriol is the main lingua franca and Spanish is widely spoken.
+BO|Bolivia|Americas|Spanish and 36 indigenous languages (incl. Quechua, Aymara, Guaraní)|—|~35|The 2009 constitution made all indigenous languages official; Quechua and Aymara are spoken by millions.
+BR|Brazil|Americas|Portuguese|Brazilian Sign Language (Libras), about 200 indigenous languages, German and Italian dialects|~210|Portuguese is spoken by nearly everyone, while about 200 indigenous languages survive, many of them endangered.
+CA|Canada|Americas|English, French|Cree, Inuktitut, Ojibwe and other Indigenous languages, Punjabi, Mandarin, Cantonese|~70|Officially bilingual, with French concentrated in Quebec; Inuktitut is official in Nunavut and many Indigenous languages are being revitalised.
+CL|Chile|Americas|Spanish (de facto)|Mapudungun, Aymara, Rapa Nui, Quechua|~10|Chilean Spanish dominates; Mapudungun is the largest Indigenous language.
+CO|Colombia|Americas|Spanish|65 Indigenous languages, San Andrés Creole, Palenquero|~80|Indigenous languages are co-official in their territories; Palenquero is a rare Spanish-based creole of Afro-Colombian origin.
+CR|Costa Rica|Americas|Spanish|Limón Creole English, Bribri, Cabécar|~10|Spanish dominates; an English-based creole is spoken on the Caribbean coast.
+CU|Cuba|Americas|Spanish|—|~2|Cuba is almost entirely Spanish-speaking.
+DM|Dominica|Americas|English|Dominican Creole French (Kwéyòl)|~3|A French-based creole is widely spoken alongside official English.
+DO|Dominican Republic|Americas|Spanish|Haitian Creole, Samaná English|~3|Spanish is the language of almost everyone; Haitian Creole is spoken by Haitian immigrants.
+EC|Ecuador|Americas|Spanish (Kichwa and Shuar official for intercultural relations)|Kichwa, Shuar and other Indigenous languages|~20|Kichwa is the largest Indigenous language, spoken mostly in the Andes.
+SV|El Salvador|Americas|Spanish|Nawat (Pipil)|~3|Spanish dominates; Nawat is critically endangered and the focus of revitalisation efforts.
+GD|Grenada|Americas|English|Grenadian Creole English, Grenadian Creole French|~3|An English-based creole is the everyday language; the French-based creole survives among older speakers.
+GT|Guatemala|Americas|Spanish|22 Mayan languages (incl. K'iche', Q'eqchi', Kaqchikel, Mam), Xinka, Garifuna|~25|About 40% of Guatemalans are Indigenous, and Mayan languages are spoken by millions.
+GY|Guyana|Americas|English|Guyanese Creole, Indigenous languages (Wapishana, Makushi), Hindustani|~10|The only English-official country in South America; Guyanese Creole is the everyday language.
+HT|Haiti|Americas|Haitian Creole, French|—|~2|Almost all Haitians speak Haitian Creole, while French is known mainly by the educated minority.
+HN|Honduras|Americas|Spanish|Garifuna, Miskito, Bay Islands English|~10|Spanish dominates; Garifuna and Miskito are spoken on the Caribbean coast.
+JM|Jamaica|Americas|English|Jamaican Patois (Patwa)|~3|Jamaican Patois is the everyday language of most people, while Standard English is used in formal settings.
+MX|Mexico|Americas|No de jure official language; Spanish and 68 Indigenous languages are national languages|Nahuatl, Yucatec Maya, Mixtec, Zapotec, Tzeltal, Tzotzil|~290|The world's largest Spanish-speaking country; a 2003 law recognised Indigenous languages as national languages with equal validity.
+NI|Nicaragua|Americas|Spanish|Miskito, Creole English, Mayangna, Garifuna|~7|Indigenous and Creole languages are official in the Caribbean coast autonomous regions.
+PA|Panama|Americas|Spanish|Ngäbere, Kuna, Emberá, Panamanian Creole English|~15|Spanish dominates; Indigenous languages are spoken in the comarcas.
+PY|Paraguay|Americas|Spanish, Guaraní|Jopará (Guaraní-Spanish mix), Plautdietsch, Portuguese|~20|One of the few countries where an Indigenous language, Guaraní, is spoken by most of the population, including non-Indigenous people.
+PE|Peru|Americas|Spanish; Quechua, Aymara and other Indigenous languages where predominant|Asháninka, Awajún, Shipibo|~90|Quechua is spoken by about 4 million people; Amazonian Peru is home to dozens of Indigenous languages.
+KN|Saint Kitts and Nevis|Americas|English|Saint Kitts Creole|~2|English is official and an English-based creole is used informally.
+LC|Saint Lucia|Americas|English|Saint Lucian Kwéyòl (French-based creole)|~2|Kwéyòl is widely spoken and increasingly used in media despite English being official.
+VC|Saint Vincent and the Grenadines|Americas|English|Vincentian Creole|~2|An English-based creole is the everyday language.
+SR|Suriname|Americas|Dutch|Sranan Tongo, Sarnami Hindustani, Javanese, Maroon languages (Saramaccan, Ndyuka), Indigenous languages|~20|The only Dutch-official country in South America; Sranan Tongo is the main lingua franca.
+TT|Trinidad and Tobago|Americas|English|Trinidadian Creole, Tobagonian Creole, Spanish, Trinidadian Hindustani|~5|English-based creoles are the everyday languages; Spanish is promoted as a first foreign language.
+US|United States|Americas|English (designated by executive order in 2025; no official language in federal law)|Spanish, Chinese, Tagalog, Vietnamese, Arabic, Navajo and other Native American languages|~220|English dominates, Spanish is spoken by over 40 million people, and many Native American languages are endangered.
+UY|Uruguay|Americas|Spanish|Uruguayan Portuguese (Portuñol), Uruguayan Sign Language|~3|Rioplatense Spanish dominates; Portuguese varieties are spoken along the Brazilian border.
+VE|Venezuela|Americas|Spanish; Indigenous languages official for their peoples|Wayuu (Guajiro), Warao, Pemon, Yanomami|~40|Spanish dominates; Wayuu is the largest Indigenous language, shared with Colombia.
+
+# ---------- Asia ----------
+AF|Afghanistan|Asia|Pashto, Dari (Persian)|Uzbek, Turkmen, Hazaragi, Balochi, Pashayi|~40|Dari is the main lingua franca and Pashto the language of the largest group; several regional languages are recognised.
+AM|Armenia|Asia|Armenian|Russian, Kurmanji (Yazidi), Assyrian Neo-Aramaic|~6|Armenian, with its own unique alphabet, is spoken by almost everyone; Russian remains widely known.
+AZ|Azerbaijan|Asia|Azerbaijani|Russian, Lezgian, Talysh, Avar|~15|Azerbaijani, a Turkic language now written in the Latin script, is dominant; Russian is still used in Baku.
+BH|Bahrain|Asia|Arabic|English, Bahrani Arabic, Persian, Urdu, Malayalam|~5|Arabic is official, and English is a widely used lingua franca among a large migrant workforce.
+BD|Bangladesh|Asia|Bengali|Chittagonian, Sylheti, Chakma, Santali, English|~40|Bengali is spoken by about 98% of the population; the 1952 Language Movement is commemorated worldwide as International Mother Language Day.
+BT|Bhutan|Asia|Dzongkha|Sharchop (Tshangla), Lhotshamkha (Nepali), English|~20|Dzongkha is the national language; English is the medium of instruction in schools.
+BN|Brunei|Asia|Malay|Brunei Malay, English, Chinese, Iban|~15|Standard Malay is official, Brunei Malay is the everyday language and English is widely used.
+KH|Cambodia|Asia|Khmer|Vietnamese, Chinese, Cham, Mon-Khmer minority languages, French|~30|Khmer is spoken by over 90% of the population and has its own script.
+CN|China|Asia|Standard Chinese (Putonghua)|Cantonese, Wu, Min, Hakka and other Chinese varieties; Uyghur, Tibetan, Mongolian, Zhuang, Yi|~300|Standard Mandarin is promoted nationwide; many Chinese 'dialects' are mutually unintelligible languages, and minority languages have regional recognition.
+GE|Georgia|Asia|Georgian (Abkhaz in Abkhazia)|Azerbaijani, Armenian, Mingrelian, Svan, Russian|~15|Georgian has its own ancient script; Mingrelian and Svan are related Kartvelian languages spoken in the west.
+IN|India|Asia|Hindi, English (union level); 22 scheduled languages|Bengali, Marathi, Telugu, Tamil, Gujarati, Urdu, Kannada, Odia, Malayalam, Punjabi|~450|One of the world's most multilingual nations, with states drawn largely along linguistic lines and four major language families.
+ID|Indonesia|Asia|Indonesian|Javanese, Sundanese, Madurese, Minangkabau, Balinese, Batak, Bugis|~700|Indonesian, based on Malay, unites over 700 languages; Javanese has the most native speakers.
+IR|Iran|Asia|Persian|Azerbaijani, Kurdish, Gilaki, Mazandarani, Luri, Arabic, Balochi|~75|Persian is the official and dominant language; Azerbaijani Turkish is spoken by a large minority in the north-west.
+IQ|Iraq|Asia|Arabic, Kurdish|Turkmen, Syriac (Neo-Aramaic), Armenian|~25|Arabic and Kurdish are official; Kurdish (Sorani and Badini) is the main language of the Kurdistan Region.
+IL|Israel|Asia|Hebrew|Arabic (special status since 2018), Russian, English, Amharic, Yiddish|~35|Hebrew was revived as a spoken language in the late 19th and 20th centuries, a rare case of language revival.
+JP|Japan|Asia|Japanese (de facto)|Ryukyuan languages, Ainu, Japanese Sign Language|~15|Japanese is spoken by almost everyone; the Ryukyuan languages of Okinawa and Ainu in Hokkaido are endangered.
+JO|Jordan|Asia|Arabic|Levantine Arabic, English, Circassian, Armenian|~5|Levantine Arabic is the everyday language; English is widely used in business and education.
+KZ|Kazakhstan|Asia|Kazakh (state language), Russian (official)|Uzbek, Uyghur, Ukrainian, German|~30|Kazakh is promoted as the state language and moving to the Latin script, while Russian remains widely used.
+KW|Kuwait|Asia|Arabic|Gulf Arabic, English, Hindi, Urdu|~5|Arabic is official; English and South Asian languages are widely spoken by migrant workers.
+KG|Kyrgyzstan|Asia|Kyrgyz (state language), Russian (official)|Uzbek, Dungan|~20|Kyrgyz is the state language and Russian is still common in cities and education.
+LA|Laos|Asia|Lao|Hmong, Khmu, Tai languages, French|~85|Lao is the national language; dozens of minority languages are spoken in the mountains.
+LB|Lebanon|Asia|Arabic|Lebanese Arabic, French, English, Armenian|~5|Lebanese are often trilingual in Arabic, French and English, with frequent code-switching.
+MY|Malaysia|Asia|Malay|English, Mandarin, Cantonese, Hokkien, Tamil, Iban, Kadazan|~135|Malay is the national language; English, Chinese varieties and Tamil are widely used, and Borneo hosts many Indigenous languages.
+MV|Maldives|Asia|Dhivehi|English|~1|Dhivehi, an Indo-Aryan language written in the Thaana script, is spoken by the whole population.
+MN|Mongolia|Asia|Mongolian|Kazakh, Buryat, Russian|~12|Mongolian is written in Cyrillic, with the traditional Mongolian script being reintroduced.
+MM|Myanmar|Asia|Burmese|Shan, Karen languages, Kachin, Chin languages, Mon, Rakhine|~115|Burmese is the national language; over 100 languages are spoken by the country's many ethnic groups.
+NP|Nepal|Asia|Nepali (all mother tongues are national languages)|Maithili, Bhojpuri, Tharu, Tamang, Newar|~125|Nepali is the official language, while the 2015 constitution recognises all mother tongues as national languages.
+KP|North Korea|Asia|Korean|—|~1|Korean is spoken by virtually everyone; the North's standard (Munhwaŏ) avoids many loanwords used in the South.
+OM|Oman|Asia|Arabic|Omani Arabic, Balochi, Swahili, Mehri, Jibbali, English|~15|Arabic is official; Modern South Arabian languages such as Mehri and Jibbali survive in the south.
+PK|Pakistan|Asia|Urdu, English|Punjabi, Pashto, Sindhi, Saraiki, Balochi, Brahui|~75|Urdu is the national language and lingua franca, though Punjabi has the most native speakers.
+PS|Palestine|Asia|Arabic|Levantine Arabic, Hebrew, English|~3|Levantine Arabic is the everyday language; Hebrew is known by many who work in Israel.
+PH|Philippines|Asia|Filipino, English|Cebuano, Ilocano, Hiligaynon, Bikol, Waray, Kapampangan|~185|Filipino (based on Tagalog) and English are official; regional languages are used in early schooling.
+QA|Qatar|Asia|Arabic|English, Hindi, Urdu, Malayalam, Nepali|~5|Most residents are migrants, so English is a major lingua franca alongside official Arabic.
+SA|Saudi Arabia|Asia|Arabic|Najdi, Hejazi and Gulf Arabic, English, Urdu, Tagalog|~6|Arabic is official; regional Arabic dialects differ noticeably, and English is common in business.
+SG|Singapore|Asia|English, Malay, Mandarin Chinese, Tamil|Singlish, Hokkien, Cantonese|~25|Four official languages; English is the main language of education and work, and Malay is the national language.
+KR|South Korea|Asia|Korean|Korean Sign Language, Jeju|~3|Korean, written in the Hangul alphabet, is spoken by almost everyone; Jeju is a distinct endangered language.
+LK|Sri Lanka|Asia|Sinhala, Tamil|English (link language)|~7|Sinhala and Tamil are both official, with English as a link language.
+SY|Syria|Asia|Arabic|Kurdish, Armenian, Aramaic, Turkmen, Circassian|~15|Levantine Arabic is the everyday language; Western Neo-Aramaic survives in a few villages.
+TJ|Tajikistan|Asia|Tajik|Russian, Uzbek, Pamir languages|~10|Tajik, a variety of Persian written in Cyrillic, is the state language; Pamir languages are spoken in the mountains.
+TH|Thailand|Asia|Thai|Isan (Lao), Northern Thai, Southern Thai, Malay, Khmer, Karen|~75|Central Thai is the standard; Isan, closely related to Lao, is spoken in the north-east.
+TL|Timor-Leste|Asia|Tetum, Portuguese|Indonesian, English, Mambai, Makasae|~20|Tetum is the main lingua franca and Portuguese was restored as co-official after independence.
+TR|Turkey|Asia|Turkish|Kurdish (Kurmanji, Zazaki), Arabic, Laz|~40|Turkish is spoken by most of the population; Kurdish is the largest minority language.
+TM|Turkmenistan|Asia|Turkmen|Russian, Uzbek|~5|Turkmen is the state language, written in the Latin script since the 1990s.
+AE|United Arab Emirates|Asia|Arabic|English, Hindi, Urdu, Malayalam, Tagalog, Persian|~10|Most residents are expatriates, making English the main lingua franca of daily life.
+UZ|Uzbekistan|Asia|Uzbek|Russian, Tajik, Karakalpak|~10|Uzbek is the state language, moving from Cyrillic to Latin script; Karakalpak is official in Karakalpakstan.
+VN|Vietnam|Asia|Vietnamese|Tày, Thái, Mường, Khmer, Hmong, Chinese|~110|Vietnamese, written in the Latin-based Quốc ngữ alphabet, is spoken by most; 54 ethnic groups are recognised.
+YE|Yemen|Asia|Arabic|Yemeni Arabic dialects, Mehri, Soqotri, Razihi|~10|Arabic is official; Soqotri, on Socotra island, is an ancient Modern South Arabian language.
+
+# ---------- Europe ----------
+AL|Albania|Europe|Albanian|Greek, Aromanian, Macedonian|~6|Albanian, an independent branch of Indo-European, has two main dialects, Gheg and Tosk.
+AD|Andorra|Europe|Catalan|Spanish, French, Portuguese|~4|The only country where Catalan is the sole official language.
+AT|Austria|Europe|German|Austro-Bavarian, Croatian, Slovene, Hungarian (regional)|~10|Austrian German is standard; Croatian, Slovene and Hungarian are recognised in certain regions.
+BY|Belarus|Europe|Belarusian, Russian|Trasianka (mixed speech)|~4|Russian dominates daily life even though Belarusian is the national language.
+BE|Belgium|Europe|Dutch, French, German|Brussels French, Walloon, Limburgish|~10|Language divides the country into Dutch-speaking Flanders, French-speaking Wallonia, a small German-speaking community, and bilingual Brussels.
+BA|Bosnia and Herzegovina|Europe|Bosnian, Croatian, Serbian|Romani|~5|Three official standards of one closely related language, written in both Latin and Cyrillic.
+BG|Bulgaria|Europe|Bulgarian|Turkish, Romani|~10|Bulgarian was the first Slavic language written in Cyrillic; Turkish is the largest minority language.
+HR|Croatia|Europe|Croatian|Serbian, Italian, Hungarian|~10|Croatian has three dialect groups, Štokavian, Kajkavian and Čakavian.
+CY|Cyprus|Europe|Greek, Turkish|English, Cypriot Arabic, Armenian|~5|Greek is spoken in the south and Turkish in the north; English is widely known.
+CZ|Czechia|Europe|Czech|Slovak, Romani, German, Polish|~10|Czech is spoken by almost everyone; Slovak is mutually intelligible.
+DK|Denmark|Europe|Danish|Faroese and Greenlandic (official in their territories), German|~6|Danish is dominant; Faroese and Greenlandic are official in the self-governing territories.
+EE|Estonia|Europe|Estonian|Russian, Võro, Seto|~5|Estonian is a Finnic language related to Finnish; Russian is spoken by about a quarter of the population.
+FI|Finland|Europe|Finnish, Swedish|Sámi languages, Russian, Finnish Sign Language|~10|Officially bilingual; Sámi languages have official status in the north.
+FR|France|Europe|French|Occitan, Breton, Alsatian, Basque, Catalan, Corsican, Arabic, Berber|~25|French is the sole official language; regional languages have declined but are taught in some schools.
+DE|Germany|Europe|German|Low German, Sorbian, Danish, Frisian, Romani, Turkish|~30|Standard German coexists with many regional dialects; Turkish is the largest immigrant language.
+GR|Greece|Europe|Greek|Albanian, Aromanian, Turkish, Macedonian|~10|Greek has one of the longest written histories of any language.
+HU|Hungary|Europe|Hungarian|German, Romani, Croatian, Slovak|~10|Hungarian is a Uralic language, unrelated to its Indo-European neighbours.
+IS|Iceland|Europe|Icelandic|English, Danish|~2|Icelandic has changed little since the Middle Ages and is actively protected from loanwords.
+IE|Ireland|Europe|Irish, English|Shelta, Polish|~5|Irish is the first official language but English is used by most; Irish-speaking Gaeltacht areas survive in the west.
+IT|Italy|Europe|Italian|Neapolitan, Sicilian, Venetian, Lombard, Sardinian, Friulian, German, Ladin|~35|Many Italian 'dialects' are distinct Romance languages; German is co-official in South Tyrol.
+LV|Latvia|Europe|Latvian|Russian, Latgalian, Livonian|~5|Latvian is one of two living Baltic languages; Russian is widely spoken.
+LI|Liechtenstein|Europe|German|Alemannic dialect|~2|An Alemannic German dialect is spoken in daily life.
+LT|Lithuania|Europe|Lithuanian|Russian, Polish|~5|Lithuanian is considered one of the most conservative living Indo-European languages.
+LU|Luxembourg|Europe|Luxembourgish, French, German|Portuguese, English|~5|Luxembourgish is the national language; French dominates law and German the media.
+MT|Malta|Europe|Maltese, English|Italian|~3|Maltese is the only Semitic language written in the Latin script and an official EU language.
+MD|Moldova|Europe|Romanian|Russian, Gagauz, Ukrainian, Bulgarian|~8|Romanian is official (formerly called 'Moldovan'); Gagauz is official in Gagauzia.
+MC|Monaco|Europe|French|Monégasque, Italian, English|~4|French is official and Monégasque, a Ligurian dialect, is taught in schools.
+ME|Montenegro|Europe|Montenegrin|Serbian, Bosnian, Albanian, Croatian|~5|Montenegrin is closely related to Serbian, Bosnian and Croatian.
+NL|Netherlands|Europe|Dutch|West Frisian (official in Friesland), Low Saxon, Limburgish, Papiamento (Caribbean)|~10|Dutch is national; West Frisian is co-official in Friesland and English is very widely spoken.
+MK|North Macedonia|Europe|Macedonian, Albanian|Turkish, Romani, Aromanian, Serbian|~8|Macedonian is official nationwide, and Albanian is co-official since 2019.
+NO|Norway|Europe|Norwegian (Bokmål and Nynorsk), Sámi|Kven, Romani|~10|Norwegian has two written standards, and Sámi has official status in the north.
+PL|Poland|Europe|Polish|Silesian, Kashubian, German, Ukrainian, Belarusian|~10|Polish is spoken by nearly everyone; Kashubian is a recognised regional language.
+PT|Portugal|Europe|Portuguese, Mirandese (regional)|—|~3|Portuguese is spoken by almost all; Mirandese is co-official in a small north-eastern area.
+RO|Romania|Europe|Romanian|Hungarian, Romani, German, Ukrainian|~15|Romanian is an Eastern Romance language; Hungarian is widely spoken in Transylvania.
+RU|Russia|Europe|Russian (plus official languages in the republics)|Tatar, Bashkir, Chechen, Chuvash, Yakut, Avar|~105|Russian is the state language, while over 30 regional languages are co-official in the republics.
+SM|San Marino|Europe|Italian|Romagnol|~2|Italian is official and Romagnol is spoken by older residents.
+RS|Serbia|Europe|Serbian|Hungarian, Romani, Bosnian, Albanian, Slovak, Romanian|~15|Serbian uses both Cyrillic and Latin scripts; Vojvodina recognises six official languages.
+SK|Slovakia|Europe|Slovak|Hungarian, Romani, Rusyn, Czech|~10|Slovak is national; Hungarian is spoken by a large minority in the south.
+SI|Slovenia|Europe|Slovene|Hungarian, Italian (regional)|~4|Slovene has an unusually large number of dialects for its size.
+ES|Spain|Europe|Spanish (Castilian); Catalan, Basque, Galician, Aranese (regional)|Valencian, Asturian, Aragonese|~15|Regional languages are co-official in their autonomous communities; Basque is unrelated to any other known language.
+SE|Sweden|Europe|Swedish|Finnish, Meänkieli, Sámi, Romani, Yiddish (minority languages)|~10|Swedish is official, and five national minority languages are recognised.
+CH|Switzerland|Europe|German, French, Italian, Romansh|Swiss German dialects|~10|Four national languages: Swiss German dialects dominate daily life in the German-speaking majority.
+UA|Ukraine|Europe|Ukrainian|Russian, Crimean Tatar, Hungarian, Romanian, Surzhyk|~15|Ukrainian is the state language and its use has grown strongly since 2014 and 2022.
+GB|United Kingdom|Europe|English (de facto); Welsh official in Wales|Scots, Scottish Gaelic, Irish, Cornish, British Sign Language, Punjabi, Urdu, Polish|~15|English dominates; Welsh is official in Wales, and Gaelic, Scots and Irish are recognised regionally.
+VA|Vatican City|Europe|Italian (administration), Latin (Holy See)|—|~2|Italian is the working language, while Latin remains the official language of the Holy See's documents.
+
+# ---------- Oceania ----------
+AU|Australia|Oceania|English (de facto)|Mandarin, Arabic, Vietnamese, Kriol, Aboriginal languages, Torres Strait Creole|~200|English dominates; of about 250 Aboriginal languages before colonisation, only a few are still learned by children.
+FJ|Fiji|Oceania|English, Fijian, Fiji Hindi|Rotuman|~10|Three official languages reflect Fiji's iTaukei and Indo-Fijian communities.
+KI|Kiribati|Oceania|English, Gilbertese (Kiribati)|—|~2|Gilbertese is spoken by almost everyone.
+MH|Marshall Islands|Oceania|Marshallese, English|—|~2|Marshallese is spoken by nearly the whole population.
+FM|Micronesia|Oceania|English|Chuukese, Pohnpeian, Kosraean, Yapese, Ulithian|~18|English is official, while each state has its own main Micronesian language.
+NR|Nauru|Oceania|Nauruan, English|—|~2|Nauruan is the national language of the world's smallest island republic.
+NZ|New Zealand|Oceania|Māori, New Zealand Sign Language (English de facto)|Samoan, Hindi, Mandarin|~5|Māori and NZ Sign Language are official, English is dominant, and Māori revitalisation is well known.
+PW|Palau|Oceania|Palauan, English|Sonsorolese, Tobian, Japanese|~4|Palauan is spoken by most; Sonsorolese and Tobian are official in their states.
+PG|Papua New Guinea|Oceania|English, Tok Pisin, Hiri Motu, PNG Sign Language|Enga, Melpa, Huli and about 840 other languages|~840|The world's most linguistically diverse country, with about 840 languages; Tok Pisin is the main lingua franca.
+WS|Samoa|Oceania|Samoan, English|—|~2|Samoan is spoken by nearly everyone and is central to daily and public life.
+SB|Solomon Islands|Oceania|English|Solomon Islands Pijin, Kwara'ae, To'abaita|~70|Pijin is the lingua franca across about 70 languages, though few speak English natively.
+TO|Tonga|Oceania|Tongan, English|—|~2|Tongan is spoken by almost everyone in the only Pacific kingdom.
+TV|Tuvalu|Oceania|Tuvaluan, English|Gilbertese (on Nui)|~3|Tuvaluan is the national language, with Gilbertese spoken on Nui atoll.
+VU|Vanuatu|Oceania|Bislama, English, French|About 110 local languages|~110|Vanuatu has one of the highest language densities in the world; Bislama is the national lingua franca.
