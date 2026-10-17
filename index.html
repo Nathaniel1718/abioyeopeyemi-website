@@ -838,11 +838,11 @@
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
-      out.textContent = "/" + data.transcription + "/";
+      out.textContent = "[" + data.transcription + "]";
       statusEl.textContent = G2P_NOTE;
     } catch (err) {
       console.error("G2P engine unavailable:", err);
-      out.textContent = "/" + text.split(/\s+/).map(wordToIPA).join(" ") + "/";
+      out.textContent = "[" + text.split(/\s+/).map(wordToIPA).join(" ") + "]";
       statusEl.textContent = "The G2P engine is unavailable right now, so this result comes from the quick in-browser converter (unmarked vowels read as mid tone).";
     } finally {
       clearTimeout(slow);
