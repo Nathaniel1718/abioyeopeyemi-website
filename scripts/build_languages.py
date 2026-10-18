@@ -140,6 +140,7 @@ TEMPLATE = """<!DOCTYPE html>
   .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
   footer a { color: #fff; }
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <header class="nav">
