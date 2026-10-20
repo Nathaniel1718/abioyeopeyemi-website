@@ -280,7 +280,7 @@
           <li>Drag a node, or the line above it, to move it with everything under it.</li>
           <li>Switch to <strong>Drag: single node</strong> to move one node only.</li>
           <li>Drop a branch onto another node (it turns green) to attach it there.</li>
-          <li>Drag the empty canvas to pan; use + / − or the mouse wheel to zoom.</li>
+          <li>Drag the empty canvas to pan; use + / −, the mouse wheel or pinch with two fingers to zoom.</li>
         </ul>
       </div>
       <div class="panel">
@@ -892,6 +892,14 @@
   let drag = null;   // {mode: "node"|"pan", ...}
   let longPress = null;   // timer for long-press menus on touch screens
   let lastTap = { id: 0, t: 0 };   // our own double-click/double-tap detection (the DOM is redrawn between clicks)
+  const touches = new Map();   // fingers on the canvas, for pinch-zoom
+  let swallowClick = false;    // the finger lifting after a long-press must not "tap" the menu item under it
+  document.addEventListener("pointerup", e => touches.delete(e.pointerId), true);
+  document.addEventListener("pointercancel", e => touches.delete(e.pointerId), true);
+  // (pointerup, not touchend: touchend goes to the node the finger started on, which a redraw may have removed)
+  ["pointerup", "pointercancel"].forEach(t => document.addEventListener(t, () => {
+    if (swallowClick) setTimeout(() => { swallowClick = false; }, 400);
+  }, true));
 
   function dropTarget(p, moving) {
     let hit = null;
@@ -905,6 +913,22 @@
 
   stage.addEventListener("pointerdown", e => {
     if (e.button !== 0) return;
+    if (e.pointerType === "touch") {
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size > 2) return;
+      if (touches.size === 2) {
+        // Second finger down: pinch-zoom instead of whatever the first finger started
+        e.preventDefault();
+        clearTimeout(longPress);
+        if (drag && drag.snap && drag.moved) restore(drag.snap);
+        stage.setPointerCapture(e.pointerId);
+        const r = stage.getBoundingClientRect(), [a, b] = [...touches.values()];
+        const mx = (a.x + b.x) / 2 - r.left, my = (a.y + b.y) / 2 - r.top;
+        drag = { mode: "pinch", d0: Math.hypot(a.x - b.x, a.y - b.y) || 1, k0: view.k,
+                 wx: (mx - view.x) / view.k, wy: (my - view.y) / view.k };
+        return;
+      }
+    }
     e.preventDefault(); // keep focus where our code puts it (e.g. the label box)
     if (editing) inlineEdit.blur();
     if (e.target.closest("[data-plus]")) { addChild(selected); return; }
@@ -926,6 +950,7 @@
         drag = null;
         try { stage.releasePointerCapture(pointerId); } catch (err) { /* already released */ }
         if (navigator.vibrate) navigator.vibrate(10);
+        swallowClick = true;
         openMenu(menuTarget, x, y);
       }, 550);
     }
@@ -957,7 +982,17 @@
   });
 
   stage.addEventListener("pointermove", e => {
+    if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (!drag) return;
+    if (drag.mode === "pinch") {
+      if (touches.size < 2) return;
+      const r = stage.getBoundingClientRect(), [a, b] = [...touches.values()];
+      const mx = (a.x + b.x) / 2 - r.left, my = (a.y + b.y) / 2 - r.top;
+      view.k = Math.min(4, Math.max(0.2, drag.k0 * Math.hypot(a.x - b.x, a.y - b.y) / drag.d0));
+      view.x = mx - drag.wx * view.k; view.y = my - drag.wy * view.k;   // keep the point between the fingers in place
+      world.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`);
+      return;
+    }
     if (drag.mode === "pan") {
       const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
       if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
@@ -992,6 +1027,10 @@
   function endDrag() {
     clearTimeout(longPress);
     if (!drag) return;
+    if (drag.mode === "pinch") {
+      if (touches.size < 2) { drag = null; render(); }   // the remaining finger shouldn't start panning
+      return;
+    }
     stage.classList.remove("panning");
     if (drag.mode === "pan") {
       if (!drag.moved && (selected || selectedArrow !== null)) { selected = null; selectedArrow = null; render(); renderPanel(); }
@@ -1070,7 +1109,10 @@
       b.type = "button"; b.setAttribute("role", "menuitem"); b.textContent = label;
       if (o.danger) b.className = "danger";
       b.disabled = !!o.disabled;
-      b.addEventListener("click", () => { closeMenu(); fn(); });
+      b.addEventListener("click", e => {
+        if (swallowClick) { e.preventDefault(); return; }
+        closeMenu(); fn();
+      });
       ctx.appendChild(b);
     });
     ctx.hidden = false;
